@@ -3,6 +3,7 @@ export async function onRequest(context) {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
     'Content-Type': 'application/json',
+    'Cache-Control': 'no-store',
   };
 
   if (context.request.method === 'OPTIONS') {
