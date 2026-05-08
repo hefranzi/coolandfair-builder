@@ -818,6 +818,13 @@
     line-height: 1.6;
     white-space: pre-wrap;
   }
+  .info-block-content p { margin-bottom: 0.75rem; }
+  .info-block-content p:last-child { margin-bottom: 0; }
+  .info-block-content ul, .info-block-content ol {
+    padding-left: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+  .info-block-content li { margin-bottom: 0.25rem; }
 
   .info-panel-footer {
     padding: 1.25rem 2rem;
@@ -1399,13 +1406,13 @@ function openInfoPanel(id) {
   document.getElementById("info-dauer").textContent = ex.dauer + " Minuten";
   document.getElementById("info-title").textContent = ex.title;
   document.getElementById("info-ziel").textContent = ex.ziel;
-  document.getElementById("info-ablauf").textContent = ex.ablauf;
+  document.getElementById("info-ablauf").innerHTML = ex.ablauf;
   document.getElementById("info-reflexion").textContent = ex.reflexion;
 
   const variationBlock = document.getElementById("info-variation-block");
   if (ex.variation) {
     variationBlock.style.display = "";
-    document.getElementById("info-variation").textContent = ex.variation;
+    document.getElementById("info-variation").innerHTML = ex.variation;
   } else {
     variationBlock.style.display = "none";
   }
@@ -1703,18 +1710,4 @@ async function init() {
   loadState();
   document.getElementById("plan-name").value = state.planName;
 
-  const activeChip = document.querySelector(`[data-filter="${state.filter}"]`);
-  if (activeChip) {
-    document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
-    activeChip.classList.add("active");
-  }
-
-  renderLibrary();
-  renderPlan();
-  renderStats();
-}
-
-init();
-</script>
-</body>
-</html>
+  const activeChip = document.querySelector(`[dat
