@@ -1,0 +1,1728 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cool and Fair – Trainings-Builder Prototyp v4</title>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+<style>
+  :root {
+    --green-25: #F2F8F5;
+    --green-50: #E6F1EB;
+    --green-100: #C2DFD0;
+    --green-200: #9BCBB1;
+    --green-400: #4FA889;
+    --green-700: #0F4F3F;
+    --green-800: #0A3B2F;
+
+    --red-50: #FBDDE5;
+    --red-400: #E94B7C;
+
+    --blue-50: #D5EAF7;
+    --blue-400: #3DAEE9;
+
+    --gray-25: #FCFCFC;
+    --gray-50: #F7F7F7;
+    --gray-100: #EFEFEF;
+    --gray-200: #DDDDDD;
+    --gray-300: #C2C2C2;
+    --gray-400: #A1A1A1;
+    --gray-600: #5C5C5C;
+    --gray-900: #171717;
+
+    --warning-bg: #FFF8E1;
+    --warning-border: #FFD89A;
+    --warning-text: #C77700;
+
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+
+    --content-max: 1600px;
+    --content-padding: 2.5rem;
+
+    --font-display: "Burbank Big Cond Black", "Inter", system-ui, sans-serif;
+    --font-body: "Soleil", "Inter", system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    font-family: var(--font-body);
+    background: var(--gray-50);
+    color: var(--gray-900);
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .app { min-height: 100vh; padding-bottom: 4rem; }
+
+  .content-wrapper {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: 0 var(--content-padding);
+  }
+
+  /* HEADER */
+  .header {
+    background: white;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--gray-200);
+    padding: 1.5rem 1.75rem;
+    margin-top: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .header-left { display: flex; flex-direction: column; gap: 0.25rem; }
+  .header-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--green-700);
+    text-transform: uppercase;
+  }
+  .header-title {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 900;
+    color: var(--green-700);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+  .header-right { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+
+  /* SAVE INDICATOR + TOOLTIP */
+  .save-indicator-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .save-indicator {
+    font-size: 0.75rem;
+    color: var(--gray-600);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .save-indicator::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    background: var(--green-400);
+    border-radius: 999px;
+  }
+  .save-info-btn {
+    width: 18px;
+    height: 18px;
+    border: 1px solid var(--gray-300);
+    background: white;
+    color: var(--gray-600);
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: Georgia, serif;
+    font-style: italic;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: all 0.15s ease;
+  }
+  .save-info-btn:hover, .save-info-btn:focus-visible {
+    border-color: var(--green-700);
+    color: var(--green-700);
+    outline: none;
+  }
+  .save-tooltip {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 280px;
+    background: var(--gray-900);
+    color: white;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    padding: 0.75rem 0.875rem;
+    border-radius: 8px;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  }
+  .save-tooltip::before {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 10px;
+    height: 10px;
+    background: var(--gray-900);
+  }
+  .save-tooltip.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .save-indicator-wrapper:hover .save-tooltip {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* BUTTONS */
+  .btn {
+    font-family: var(--font-body);
+    font-weight: 700;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .btn:focus-visible { outline: 4px solid rgba(15, 79, 63, 0.4); outline-offset: 0; }
+  .btn-primary { background: var(--green-700); color: white; }
+  .btn-primary:hover { background: var(--green-800); }
+  .btn-secondary { background: white; color: var(--gray-900); border-color: var(--gray-200); }
+  .btn-secondary:hover { background: var(--gray-50); border-color: var(--gray-400); }
+
+  /* PRINT DROPDOWN */
+  .print-dropdown {
+    position: relative;
+  }
+  .print-dropdown-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .print-dropdown-trigger .caret {
+    width: 10px;
+    height: 10px;
+    transition: transform 0.15s ease;
+  }
+  .print-dropdown.is-open .print-dropdown-trigger .caret {
+    transform: rotate(180deg);
+  }
+  .print-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    min-width: 240px;
+    padding: 0.375rem;
+    z-index: 20;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-4px);
+    transition: all 0.15s ease;
+  }
+  .print-dropdown.is-open .print-dropdown-menu {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+  .print-dropdown-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0.625rem 0.75rem;
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--gray-900);
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s ease;
+  }
+  .print-dropdown-item:hover {
+    background: var(--green-25);
+    color: var(--green-700);
+  }
+
+  /* MAIN LAYOUT */
+  .main {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .column {
+    background: white;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--gray-200);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .column-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .column-header h2 {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--green-700);
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+  }
+  .column-header p { font-size: 0.875rem; color: var(--gray-600); }
+
+  .library-filters {
+    padding: 1rem 1.5rem;
+    background: var(--gray-50);
+    border-bottom: 1px solid var(--gray-100);
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .chip {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    border: 1px solid var(--gray-200);
+    background: white;
+    color: var(--gray-900);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .chip:hover { border-color: var(--gray-400); }
+  .chip.active { background: var(--green-700); color: white; border-color: var(--green-700); }
+
+  .library-list {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-height: 200px;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+  }
+
+  /* EXERCISE CARDS */
+  .exercise-card {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: grab;
+    transition: all 0.15s ease;
+    position: relative;
+  }
+  .exercise-card:hover {
+    border-color: var(--gray-400);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .exercise-card.sortable-ghost {
+    opacity: 0.4;
+    background: var(--green-25);
+    border-style: dashed;
+  }
+  .exercise-card.sortable-chosen { cursor: grabbing; }
+  .exercise-card.sortable-drag {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    cursor: grabbing;
+  }
+
+  .drag-handle {
+    color: var(--gray-400);
+    flex-shrink: 0;
+    width: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    align-items: center;
+  }
+  .drag-handle span {
+    display: block;
+    width: 12px;
+    height: 2px;
+    background: var(--gray-400);
+    border-radius: 999px;
+  }
+
+  .position-badge {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background: var(--green-700);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+  }
+  .position-badge.fixed {
+    background: var(--gray-100);
+    color: var(--green-700);
+  }
+
+  .color-bar {
+    width: 4px;
+    height: 40px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .color-bar.cat-einstieg { background: var(--red-400); }
+  .color-bar.cat-bewegung { background: var(--green-400); }
+  .color-bar.cat-team { background: var(--blue-400); }
+
+  .exercise-id {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--green-50);
+    color: var(--green-700);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .exercise-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  .exercise-title {
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: var(--gray-900);
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .exercise-meta {
+    font-size: 0.75rem;
+    color: var(--gray-600);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  .meta-lock {
+    width: 11px;
+    height: 11px;
+    flex-shrink: 0;
+    margin-right: 0.1rem;
+    color: var(--gray-400);
+  }
+
+  .icon-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    border: 1px solid var(--gray-200);
+    background: white;
+    color: var(--gray-600);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+    font-size: 1rem;
+  }
+  .icon-btn:hover { border-color: var(--gray-400); color: var(--gray-900); }
+  .icon-btn.add {
+    background: var(--green-700);
+    color: white;
+    border-color: var(--green-700);
+  }
+  .icon-btn.add:hover { background: var(--green-800); }
+  .icon-btn.info {
+    background: var(--green-50);
+    color: var(--green-700);
+    border-color: var(--green-100);
+    font-style: italic;
+    font-family: Georgia, serif;
+    font-weight: 700;
+  }
+  .icon-btn.info:hover {
+    background: var(--green-100);
+    border-color: var(--green-200);
+  }
+
+  /* PLAN COLUMN */
+  .plan-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  .stat-card {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    padding: 1rem 1.25rem;
+    transition: all 0.2s ease;
+  }
+  .stat-label {
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--gray-600);
+    text-transform: uppercase;
+    margin-bottom: 0.15rem;
+  }
+  .stat-value {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--green-700);
+    line-height: 1;
+  }
+  .stat-sub {
+    font-size: 0.7rem;
+    color: var(--gray-600);
+    margin-top: 0.25rem;
+  }
+  .stat-card.complete { border-color: var(--green-400); background: var(--green-25); }
+  .stat-card.complete .stat-value { color: var(--green-700); }
+  .stat-card.incomplete { border-color: var(--warning-border); background: var(--warning-bg); }
+  .stat-card.incomplete .stat-value { color: var(--warning-text); }
+
+  .plan-header {
+    background: var(--green-700);
+    padding: 1.5rem;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .plan-header-content { flex: 1; min-width: 0; }
+  .plan-header h2 {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--green-100);
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+  }
+  .plan-name-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+  }
+  .plan-name-input {
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: white;
+    background: transparent;
+    border: none;
+    border-bottom: 1px dashed var(--green-200);
+    padding: 0.15rem 0;
+    flex: 1;
+    min-width: 0;
+    outline: none;
+    transition: border-color 0.15s ease;
+  }
+  .plan-name-input:hover, .plan-name-input:focus {
+    border-bottom-color: white;
+    border-bottom-style: solid;
+  }
+  .plan-name-edit {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    color: var(--green-100);
+    border-radius: 999px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+  }
+  .plan-name-edit:hover { background: rgba(255,255,255,0.2); color: white; }
+  .plan-name-edit svg { width: 14px; height: 14px; }
+
+  /* FIXED SLOTS */
+  .fixed-slot {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    padding: 0.875rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  /* SUBTILE EINSTIEG SWITCH */
+  .einstieg-switch-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: auto;
+    padding-left: 0.5rem;
+  }
+  .einstieg-switch-label {
+    font-size: 0.6875rem;
+    color: var(--gray-600);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .einstieg-switch {
+    display: inline-flex;
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: 999px;
+    padding: 2px;
+    gap: 1px;
+  }
+  .einstieg-switch button {
+    border: none;
+    background: transparent;
+    padding: 0.3rem 0.625rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    font-family: var(--font-body);
+    color: var(--gray-600);
+    cursor: pointer;
+    border-radius: 999px;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+  .einstieg-switch button:hover { color: var(--gray-900); }
+  .einstieg-switch button.active {
+    background: var(--green-700);
+    color: white;
+  }
+
+  /* PLAN LIST */
+  .plan-list {
+    padding: 1rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-height: 200px;
+  }
+  .plan-list .exercise-card { background: var(--gray-50); }
+
+  .plan-section-divider {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0 0.25rem;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--gray-400);
+    text-transform: uppercase;
+  }
+  .plan-section-divider::before,
+  .plan-section-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--gray-100);
+  }
+
+  .drop-zone {
+    border: 2px dashed var(--gray-300);
+    border-radius: var(--radius-md);
+    padding: 2rem 1rem;
+    text-align: center;
+    color: var(--gray-600);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  .drop-zone.is-empty { padding: 2.5rem 1rem; }
+  .drop-zone.is-active {
+    border-color: var(--green-400);
+    background: var(--green-25);
+    color: var(--green-700);
+  }
+
+  .dfb-hint {
+    background: var(--green-25);
+    border: 1px solid var(--green-100);
+    border-radius: var(--radius-md);
+    padding: 1rem 1.25rem;
+    margin-top: 1rem;
+  }
+  .dfb-hint-label {
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--green-700);
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  .dfb-hint-text {
+    font-size: 0.8125rem;
+    color: var(--green-700);
+    line-height: 1.55;
+  }
+  .dfb-hint-text a {
+    color: var(--green-700);
+    text-decoration: underline;
+    font-weight: 600;
+  }
+
+  /* INFO PANEL */
+  .info-panel-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.3);
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+  .info-panel-backdrop.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .info-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 540px;
+    background: white;
+    z-index: 51;
+    transform: translateX(100%);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    box-shadow: -8px 0 32px rgba(0,0,0,0.1);
+  }
+  .info-panel.is-open { transform: translateX(0); }
+
+  .info-panel-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--gray-100);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+  }
+  .info-panel-header-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+    min-width: 0;
+  }
+  .info-panel-id {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--green-700);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .info-panel-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  .info-panel-meta-label {
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--gray-600);
+    text-transform: uppercase;
+  }
+  .info-panel-meta-value {
+    font-size: 0.875rem;
+    color: var(--gray-900);
+    font-weight: 600;
+  }
+
+  .info-panel-close {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--gray-200);
+    background: white;
+    border-radius: 999px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray-600);
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+    font-size: 1.25rem;
+  }
+  .info-panel-close:hover {
+    border-color: var(--gray-400);
+    color: var(--gray-900);
+  }
+
+  .info-panel-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem 2rem 2rem;
+  }
+
+  .info-panel-title {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 900;
+    color: var(--gray-900);
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+  }
+
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block-label {
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--green-700);
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  .info-block-content {
+    font-size: 0.9375rem;
+    color: var(--gray-900);
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+  .info-block-content p { margin-bottom: 0.75rem; }
+  .info-block-content p:last-child { margin-bottom: 0; }
+  .info-block-content ul, .info-block-content ol {
+    padding-left: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+  .info-block-content li { margin-bottom: 0.25rem; }
+
+  .info-panel-footer {
+    padding: 1.25rem 2rem;
+    border-top: 1px solid var(--gray-100);
+    background: var(--gray-50);
+    flex-shrink: 0;
+  }
+  .info-panel-footer .btn {
+    width: 100%;
+    justify-content: center;
+    padding: 0.875rem 1rem;
+    font-size: 0.9375rem;
+  }
+
+  /* PRINT VIEW */
+  .print-view { display: none; }
+
+  @media print {
+    @page { margin: 2.5cm; size: A4; }
+    .header, .main, .info-panel, .info-panel-backdrop,
+    .header *, .main *, .info-panel * { display: none !important; }
+    body { background: white; }
+    .print-view { display: block; font-family: var(--font-body); color: var(--gray-900); }
+    .print-cover { page-break-after: always; padding-bottom: 1cm; }
+    .print-eyebrow {
+      font-size: 9pt; font-weight: 700; letter-spacing: 0.1em;
+      color: var(--green-700); text-transform: uppercase; margin-bottom: 0.3cm;
+    }
+    .print-title {
+      font-family: var(--font-display); font-size: 32pt; font-weight: 900;
+      color: var(--green-700); line-height: 1; letter-spacing: -0.01em; margin-bottom: 0.8cm;
+    }
+    .print-meta {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5cm;
+      margin-bottom: 1cm; padding: 0.6cm; background: var(--green-25); border-radius: 4mm;
+    }
+    .print-meta-item .label {
+      font-size: 8pt; font-weight: 700; letter-spacing: 0.08em;
+      color: var(--green-700); text-transform: uppercase; margin-bottom: 1mm;
+    }
+    .print-meta-item .value {
+      font-family: var(--font-display); font-size: 18pt; font-weight: 900;
+      color: var(--green-700); line-height: 1;
+    }
+    .print-ruf {
+      background: var(--green-700); color: white; padding: 0.7cm; border-radius: 4mm;
+      text-align: center; margin-bottom: 1cm;
+    }
+    .print-ruf-label {
+      font-size: 8pt; font-weight: 700; letter-spacing: 0.1em;
+      color: var(--green-100); text-transform: uppercase; margin-bottom: 3mm;
+    }
+    .print-ruf-text { font-family: var(--font-display); font-size: 16pt; font-weight: 900; }
+    .print-overview-title {
+      font-family: var(--font-display); font-size: 14pt; font-weight: 900;
+      color: var(--green-700); margin-bottom: 0.4cm; text-transform: uppercase;
+    }
+    .print-overview-list { list-style: none; counter-reset: ov-counter; }
+    .print-overview-list li {
+      counter-increment: ov-counter; padding: 0.25cm 0;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex; align-items: center; gap: 0.4cm; font-size: 10pt;
+    }
+    .print-overview-list li::before {
+      content: counter(ov-counter);
+      width: 7mm; height: 7mm; background: var(--green-700); color: white;
+      border-radius: 999px; display: flex; align-items: center; justify-content: center;
+      font-size: 9pt; font-weight: 900; flex-shrink: 0;
+    }
+    .print-overview-list .ov-id { font-weight: 700; color: var(--green-700); width: 1.2cm; }
+    .print-overview-list .ov-title { flex: 1; font-weight: 600; }
+    .print-overview-list .ov-meta { font-size: 9pt; color: var(--gray-600); }
+    .print-exercise {
+      page-break-inside: avoid; margin-bottom: 0.8cm; padding-bottom: 0.6cm;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .print-exercise:last-of-type { border-bottom: none; }
+    .print-exercise-header {
+      display: flex; align-items: baseline; gap: 0.4cm; margin-bottom: 0.3cm;
+    }
+    .print-exercise-id {
+      font-family: var(--font-display); font-size: 22pt; font-weight: 900;
+      color: var(--green-700); line-height: 1;
+    }
+    .print-exercise-title {
+      font-family: var(--font-display); font-size: 16pt; font-weight: 900;
+      color: var(--gray-900); line-height: 1.1; flex: 1;
+    }
+    .print-exercise-meta {
+      font-size: 9pt; color: var(--gray-600); font-weight: 600;
+      margin-bottom: 0.4cm; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .print-block-label {
+      font-size: 8pt; font-weight: 700; letter-spacing: 0.1em;
+      color: var(--green-700); text-transform: uppercase;
+      margin-bottom: 1mm; margin-top: 0.3cm;
+    }
+    .print-block-content { font-size: 10pt; line-height: 1.5; color: var(--gray-900); }
+    .print-block-content p { margin-bottom: 0.2cm; }
+    .print-rules { page-break-before: always; padding-top: 0.5cm; }
+    .print-rules-title {
+      font-family: var(--font-display); font-size: 22pt; font-weight: 900;
+      color: var(--green-700); margin-bottom: 0.5cm; text-transform: uppercase;
+    }
+    .print-rules-list { list-style: none; counter-reset: rules; }
+    .print-rules-list li {
+      counter-increment: rules; padding: 0.4cm 0 0.4cm 1.2cm;
+      position: relative; border-bottom: 1px solid var(--gray-200);
+    }
+    .print-rules-list li::before {
+      content: counter(rules); position: absolute; left: 0; top: 0.4cm;
+      font-family: var(--font-display); font-size: 18pt; font-weight: 900; color: var(--green-700);
+    }
+    .print-rules-list h4 {
+      font-family: var(--font-display); font-size: 12pt; font-weight: 900;
+      color: var(--gray-900); margin-bottom: 0.2cm; text-transform: uppercase;
+    }
+    .print-rules-list ul {
+      list-style: disc; padding-left: 0.5cm;
+      font-size: 9pt; color: var(--gray-600); line-height: 1.4;
+    }
+    .print-footer {
+      page-break-before: avoid; margin-top: 1cm; padding-top: 0.5cm;
+      border-top: 1px solid var(--gray-200); display: flex; justify-content: space-between;
+      font-size: 8pt; color: var(--gray-600);
+    }
+  }
+
+  /* TABLET (1200px) */
+  @media (max-width: 1200px) {
+    .main {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .plan-section { order: 1; }
+    .library-section { order: 2; }
+    .library-list {
+      max-height: none;
+      overflow-y: visible;
+    }
+  }
+
+  /* SMARTPHONE (600px) */
+  @media (max-width: 600px) {
+    :root { --content-padding: 1rem; }
+    .header { padding: 1rem; flex-wrap: wrap; gap: 1rem; }
+    .header-title { font-size: 1.25rem; }
+    .header-right { width: 100%; justify-content: flex-start; }
+    .plan-stats { grid-template-columns: 1fr; }
+    .info-panel { max-width: 100%; }
+    .einstieg-switch-wrapper {
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.25rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="content-wrapper">
+    <header class="header">
+      <div class="header-left">
+        <span class="header-eyebrow">Trainings-Builder</span>
+        <h1 class="header-title">Dein Training. Deine Wahl.</h1>
+      </div>
+      <div class="header-right">
+        <div class="save-indicator-wrapper">
+          <span class="save-indicator">Auto-Speicherung aktiv</span>
+          <button class="save-info-btn" id="save-info-btn" aria-label="Was bedeutet Auto-Speicherung?" aria-describedby="save-tooltip">i</button>
+          <div class="save-tooltip" id="save-tooltip" role="tooltip">
+            Dein Trainingsplan wird automatisch in deinem Browser gespeichert. Beim nächsten Besuch ist alles wieder da. Es werden keine Daten an uns oder andere Server geschickt.
+          </div>
+        </div>
+        <button class="btn btn-secondary" id="reset-btn">Zurücksetzen</button>
+        <div class="print-dropdown" id="print-dropdown">
+          <button class="btn btn-primary print-dropdown-trigger" id="print-trigger" aria-haspopup="true" aria-expanded="false">
+            <span>Drucken / PDF</span>
+            <svg class="caret" viewBox="0 0 12 12" fill="none">
+              <path d="M3 4.5l3 3 3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="print-dropdown-menu" role="menu">
+            <button class="print-dropdown-item" role="menuitem" data-print="plan">Trainingsplan drucken</button>
+            <button class="print-dropdown-item" role="menuitem" data-print="rules">Mit CaF-Regeln drucken</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="column library-section">
+        <header class="column-header">
+          <h2>Übungsbibliothek</h2>
+          <p>Klick auf + oder ziehe eine Übung in deinen Plan</p>
+        </header>
+        <div class="library-filters" id="filters">
+          <button class="chip active" data-filter="all">Alle (21)</button>
+          <button class="chip" data-filter="bewegung">Bewegung (13)</button>
+          <button class="chip" data-filter="team">Teambesprechung (8)</button>
+        </div>
+        <div class="library-list" id="library-list"></div>
+      </section>
+
+      <section class="plan-section">
+        <div class="plan-stats">
+          <div class="stat-card" id="stat-card-count">
+            <div class="stat-label">Eigene Übungen</div>
+            <div class="stat-value" id="stat-count">0</div>
+            <div class="stat-sub">plus Einstieg & Abschluss</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Gesamtdauer</div>
+            <div class="stat-value" id="stat-duration">20 Min</div>
+            <div class="stat-sub" id="stat-duration-sub"></div>
+          </div>
+          <div class="stat-card" id="stat-structure-card">
+            <div class="stat-label">Struktur</div>
+            <div class="stat-value" id="stat-structure">Beginne</div>
+            <div class="stat-sub" id="stat-structure-sub">Bewegung + Teambesprechung fehlen</div>
+          </div>
+        </div>
+
+        <div class="column">
+          <div class="plan-header">
+            <div class="plan-header-content">
+              <h2>Dein Trainingsplan</h2>
+              <div class="plan-name-wrapper">
+                <input type="text" class="plan-name-input" id="plan-name" value="Mein Cool-and-Fair-Training" />
+                <button class="plan-name-edit" id="plan-name-edit-btn" aria-label="Name bearbeiten" title="Name bearbeiten">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 20h9"/>
+                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="plan-list" id="plan-list"></div>
+        </div>
+
+        <div class="dfb-hint">
+          <div class="dfb-hint-label">Tipp vom DFB</div>
+          <div class="dfb-hint-text">
+            Der DFB empfiehlt mit der „Besten Trainingseinheit" einen Aufbau aus Aktivierung → Spielen → Zwischenblock → Spielen. Du kannst dich beim Zusammenstellen daran orientieren. <a href="#methodik">Mehr zur Methodik</a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="info-panel-backdrop" id="info-backdrop"></div>
+  <aside class="info-panel" id="info-panel" aria-hidden="true">
+    <div class="info-panel-header">
+      <div class="info-panel-header-content">
+        <div class="info-panel-id" id="info-id">B2</div>
+        <div class="info-panel-meta">
+          <div class="info-panel-meta-label" id="info-cat">Bewegung</div>
+          <div class="info-panel-meta-value" id="info-dauer">15 Min</div>
+        </div>
+      </div>
+      <button class="info-panel-close" id="info-close" aria-label="Schließen">×</button>
+    </div>
+    <div class="info-panel-body">
+      <h2 class="info-panel-title" id="info-title">Brückenwächter:in</h2>
+      <div class="info-block">
+        <div class="info-block-label">Ziel</div>
+        <div class="info-block-content" id="info-ziel"></div>
+      </div>
+      <div class="info-block">
+        <div class="info-block-label">Ablauf</div>
+        <div class="info-block-content" id="info-ablauf"></div>
+      </div>
+      <div class="info-block" id="info-variation-block">
+        <div class="info-block-label">Variation</div>
+        <div class="info-block-content" id="info-variation"></div>
+      </div>
+      <div class="info-block">
+        <div class="info-block-label">Reflexionsfragen</div>
+        <div class="info-block-content" id="info-reflexion"></div>
+      </div>
+    </div>
+    <div class="info-panel-footer" id="info-footer">
+      <button class="btn btn-primary" id="info-add-btn">+ Zum Plan hinzufügen</button>
+    </div>
+  </aside>
+
+  <div class="print-view" id="print-view"></div>
+</div>
+
+<script>
+// ======= DATEN (werden beim Start vom CMS geladen) =======
+let EXERCISES = [];
+
+async function loadExercisesFromCMS() {
+  try {
+    const response = await fetch('/api/uebungen?v=' + Date.now());
+    if (!response.ok) throw new Error('CMS nicht erreichbar');
+    EXERCISES = await response.json();
+  } catch (e) {
+    console.error('CMS-Fehler:', e);
+    showLoadError();
+  }
+}
+
+function showLoadError() {
+  document.getElementById('library-list').innerHTML = `
+    <div style="padding:2rem;text-align:center;color:var(--gray-600);font-size:0.875rem;line-height:1.6;">
+      <div style="font-size:2rem;margin-bottom:0.5rem;">⚠️</div>
+      Die Übungen konnten nicht geladen werden.<br>
+      Bitte Seite neu laden oder später nochmal versuchen.
+    </div>
+  `;
+}
+
+// EXERCISES wird beim Start via loadExercisesFromCMS() befüllt.
+
+// ======= STATE =======
+const STORAGE_KEY = "coolandfair-builder-v4";
+let state = {
+  planName: "Mein Cool-and-Fair-Training",
+  einstiegId: "E2",
+  middleIds: [],
+  filter: "all",
+};
+let printWithRules = false; // Wird vor jedem Druck gesetzt
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) state = { ...state, ...JSON.parse(saved) };
+  } catch (e) { console.error("Load failed", e); }
+}
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+  catch (e) { console.error("Save failed", e); }
+}
+function findEx(id) { return EXERCISES.find(e => e.id === id); }
+
+function formatDuration(min) {
+  if (min < 60) return null;
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  if (m === 0) return `${h}h`;
+  return `${h}h ${m}min`;
+}
+
+// SVG-Helper für Schloss-Icon (Inline)
+const lockSvgInline = `<svg class="meta-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-label="Fix"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`;
+
+// ======= RENDER: Bibliothek =======
+function renderLibrary() {
+  const list = document.getElementById("library-list");
+  list.innerHTML = "";
+
+  let filtered = EXERCISES.filter(e => e.cat !== "einstieg");
+  if (state.filter !== "all") {
+    filtered = filtered.filter(e => e.cat === state.filter);
+  }
+
+  filtered.forEach(ex => {
+    const card = document.createElement("div");
+    card.className = "exercise-card";
+    card.dataset.id = ex.id;
+    card.innerHTML = `
+      <div class="drag-handle"><span></span><span></span><span></span></div>
+      <div class="color-bar cat-${ex.cat}"></div>
+      <div class="exercise-id">${ex.id}</div>
+      <div class="exercise-content">
+        <div class="exercise-title">${ex.title}</div>
+        <div class="exercise-meta">${ex.dauer} Min · ${ex.catLabel}</div>
+      </div>
+      <button class="icon-btn info" aria-label="Details ansehen" data-info="${ex.id}">i</button>
+      <button class="icon-btn add" aria-label="Zum Plan hinzufügen" data-add="${ex.id}">+</button>
+    `;
+    list.appendChild(card);
+  });
+}
+
+// ======= RENDER: Plan =======
+function renderPlan() {
+  const list = document.getElementById("plan-list");
+  list.innerHTML = "";
+
+  // FIXED SLOT: EINSTIEG
+  const einstiegEx = findEx(state.einstiegId);
+  const einstiegSlot = document.createElement("div");
+  einstiegSlot.className = "fixed-slot";
+  einstiegSlot.innerHTML = `
+    <div class="position-badge fixed">1</div>
+    <div class="color-bar cat-${einstiegEx.cat}"></div>
+    <div class="exercise-content">
+      <div class="exercise-title">${einstiegEx.title}</div>
+      <div class="exercise-meta">${lockSvgInline}${einstiegEx.id} · ${einstiegEx.dauer} Min · ${einstiegEx.catLabel}</div>
+    </div>
+    <div class="einstieg-switch-wrapper">
+      <span class="einstieg-switch-label">Trainingstyp:</span>
+      <div class="einstieg-switch" role="tablist" aria-label="Einstiegs-Variante wählen">
+        <button class="${state.einstiegId === 'E1' ? 'active' : ''}" data-einstieg="E1" role="tab" aria-selected="${state.einstiegId === 'E1'}">Erstes</button>
+        <button class="${state.einstiegId === 'E2' ? 'active' : ''}" data-einstieg="E2" role="tab" aria-selected="${state.einstiegId === 'E2'}">Folgendes</button>
+      </div>
+    </div>
+    <button class="icon-btn info" aria-label="Details ansehen" data-info="${einstiegEx.id}">i</button>
+  `;
+  list.appendChild(einstiegSlot);
+
+  // MITTLERER BEREICH
+  const middleDivider = document.createElement("div");
+  middleDivider.className = "plan-section-divider";
+  middleDivider.innerHTML = `<span>Bewegung & Teambesprechung</span>`;
+  list.appendChild(middleDivider);
+
+  const middleList = document.createElement("div");
+  middleList.id = "middle-list";
+  middleList.style.display = "flex";
+  middleList.style.flexDirection = "column";
+  middleList.style.gap = "0.75rem";
+  middleList.style.minHeight = "60px";
+
+  state.middleIds.forEach((id, idx) => {
+    const ex = findEx(id);
+    if (!ex) return;
+    const card = document.createElement("div");
+    card.className = "exercise-card";
+    card.dataset.id = ex.id;
+    card.innerHTML = `
+      <div class="drag-handle"><span></span><span></span><span></span></div>
+      <div class="position-badge">${idx + 2}</div>
+      <div class="color-bar cat-${ex.cat}"></div>
+      <div class="exercise-content">
+        <div class="exercise-title">${ex.title}</div>
+        <div class="exercise-meta">${ex.id} · ${ex.dauer} Min · ${ex.catLabel}</div>
+      </div>
+      <button class="icon-btn info" aria-label="Details ansehen" data-info="${ex.id}">i</button>
+      <button class="icon-btn" aria-label="Aus Plan entfernen" data-remove="${ex.id}">×</button>
+    `;
+    middleList.appendChild(card);
+  });
+
+  if (state.middleIds.length === 0) {
+    const dz = document.createElement("div");
+    dz.className = "drop-zone is-empty";
+    dz.textContent = "Ziehe Übungen hierher oder klick auf das + in der Bibliothek";
+    middleList.appendChild(dz);
+  } else {
+    const dz = document.createElement("div");
+    dz.className = "drop-zone";
+    dz.style.padding = "1rem";
+    dz.textContent = "Weitere Übung hierher ziehen";
+    middleList.appendChild(dz);
+  }
+  list.appendChild(middleList);
+
+  // FIXED SLOT: ABSCHLUSS
+  const abschlussDivider = document.createElement("div");
+  abschlussDivider.className = "plan-section-divider";
+  abschlussDivider.innerHTML = `<span>Abschluss</span>`;
+  list.appendChild(abschlussDivider);
+
+  const abschlussEx = findEx("E3");
+  const abschlussSlot = document.createElement("div");
+  abschlussSlot.className = "fixed-slot";
+  abschlussSlot.innerHTML = `
+    <div class="position-badge fixed">${state.middleIds.length + 2}</div>
+    <div class="color-bar cat-${abschlussEx.cat}"></div>
+    <div class="exercise-content">
+      <div class="exercise-title">${abschlussEx.title}</div>
+      <div class="exercise-meta">${lockSvgInline}${abschlussEx.id} · ${abschlussEx.dauer} Min · ${abschlussEx.catLabel}</div>
+    </div>
+    <button class="icon-btn info" aria-label="Details ansehen" data-info="${abschlussEx.id}">i</button>
+  `;
+  list.appendChild(abschlussSlot);
+
+  initSortable();
+}
+
+// ======= STATS =======
+function renderStats() {
+  const middleExs = state.middleIds.map(id => findEx(id)).filter(Boolean);
+  const einstiegEx = findEx(state.einstiegId);
+  const abschlussEx = findEx("E3");
+
+  const totalMin = middleExs.reduce((s, e) => s + e.dauer, 0) + (einstiegEx?.dauer || 0) + (abschlussEx?.dauer || 0);
+
+  document.getElementById("stat-count").textContent = middleExs.length;
+  document.getElementById("stat-duration").textContent = totalMin + " Min";
+  const subDuration = formatDuration(totalMin);
+  document.getElementById("stat-duration-sub").textContent = subDuration || "";
+
+  const cats = new Set(middleExs.map(e => e.cat));
+  const hasB = cats.has("bewegung");
+  const hasT = cats.has("team");
+
+  const structureCard = document.getElementById("stat-structure-card");
+  const structureLabel = document.getElementById("stat-structure");
+  const structureSub = document.getElementById("stat-structure-sub");
+
+  structureCard.classList.remove("complete", "incomplete");
+
+  if (middleExs.length === 0) {
+    structureLabel.textContent = "Beginne";
+    structureSub.textContent = "Bewegung + Teambesprechung fehlen";
+  } else if (hasB && hasT) {
+    structureLabel.textContent = "Vollständig";
+    structureSub.textContent = "Aufbau passt";
+    structureCard.classList.add("complete");
+  } else {
+    const missing = [];
+    if (!hasB) missing.push("Bewegung");
+    if (!hasT) missing.push("Teambesprechung");
+    structureLabel.textContent = "Im Aufbau";
+    structureSub.textContent = `Es fehlt: ${missing.join(", ")}`;
+    structureCard.classList.add("incomplete");
+  }
+}
+
+// ======= SORTABLE =======
+let libSortable, middleSortable;
+
+function initSortable() {
+  if (libSortable) libSortable.destroy();
+  if (middleSortable) middleSortable.destroy();
+
+  const libList = document.getElementById("library-list");
+  const middleList = document.getElementById("middle-list");
+  const isMobile = window.matchMedia("(max-width: 1200px)").matches;
+
+  if (!isMobile && libList) {
+    libSortable = Sortable.create(libList, {
+      group: { name: "shared", pull: "clone", put: false },
+      sort: false,
+      animation: 150,
+      ghostClass: "sortable-ghost",
+      chosenClass: "sortable-chosen",
+      dragClass: "sortable-drag",
+    });
+  }
+
+  if (middleList) {
+    middleSortable = Sortable.create(middleList, {
+      group: !isMobile ? { name: "shared", pull: false, put: true } : null,
+      animation: 150,
+      ghostClass: "sortable-ghost",
+      chosenClass: "sortable-chosen",
+      dragClass: "sortable-drag",
+      filter: ".drop-zone",
+      onAdd: (evt) => {
+        const id = evt.item.dataset.id;
+        evt.item.remove();
+        const insertIdx = Math.min(evt.newIndex, state.middleIds.length);
+        state.middleIds.splice(insertIdx, 0, id);
+        updatePlan();
+      },
+      onUpdate: () => {
+        const cards = Array.from(middleList.querySelectorAll(".exercise-card"));
+        state.middleIds = cards.map(c => c.dataset.id);
+        updatePlan();
+      },
+    });
+  }
+}
+
+window.addEventListener("resize", () => initSortable());
+
+// ======= INFO PANEL =======
+function openInfoPanel(id) {
+  const ex = findEx(id);
+  if (!ex) return;
+
+  document.getElementById("info-id").textContent = ex.id;
+  document.getElementById("info-cat").textContent = ex.catLabel;
+  document.getElementById("info-dauer").textContent = ex.dauer + " Minuten";
+  document.getElementById("info-title").textContent = ex.title;
+  document.getElementById("info-ziel").textContent = ex.ziel;
+  document.getElementById("info-ablauf").innerHTML = ex.ablauf;
+  document.getElementById("info-reflexion").textContent = ex.reflexion;
+
+  const variationBlock = document.getElementById("info-variation-block");
+  if (ex.variation) {
+    variationBlock.style.display = "";
+    document.getElementById("info-variation").innerHTML = ex.variation;
+  } else {
+    variationBlock.style.display = "none";
+  }
+
+  const footer = document.getElementById("info-footer");
+  const addBtn = document.getElementById("info-add-btn");
+  const isFixed = ex.cat === "einstieg";
+  const isAlreadyInPlan = state.middleIds.includes(ex.id);
+
+  if (isFixed) {
+    footer.style.display = "none";
+  } else if (isAlreadyInPlan) {
+    footer.style.display = "";
+    addBtn.textContent = "Bereits im Plan";
+    addBtn.disabled = true;
+    addBtn.style.opacity = "0.5";
+    addBtn.style.cursor = "not-allowed";
+  } else {
+    footer.style.display = "";
+    addBtn.textContent = "+ Zum Plan hinzufügen";
+    addBtn.disabled = false;
+    addBtn.style.opacity = "";
+    addBtn.style.cursor = "";
+    addBtn.dataset.id = ex.id;
+  }
+
+  document.getElementById("info-panel").classList.add("is-open");
+  document.getElementById("info-panel").setAttribute("aria-hidden", "false");
+  document.getElementById("info-backdrop").classList.add("is-open");
+}
+
+function closeInfoPanel() {
+  document.getElementById("info-panel").classList.remove("is-open");
+  document.getElementById("info-panel").setAttribute("aria-hidden", "true");
+  document.getElementById("info-backdrop").classList.remove("is-open");
+}
+
+// ======= EVENT HANDLERS =======
+document.addEventListener("click", (e) => {
+  // Print-Dropdown schließen, wenn außerhalb geklickt wird
+  const dropdown = document.getElementById("print-dropdown");
+  if (dropdown.classList.contains("is-open") && !dropdown.contains(e.target)) {
+    dropdown.classList.remove("is-open");
+    document.getElementById("print-trigger").setAttribute("aria-expanded", "false");
+  }
+
+  // Save-Tooltip auf Klick toggeln (für Touch-Geräte)
+  if (e.target.id === "save-info-btn") {
+    document.getElementById("save-tooltip").classList.toggle("is-visible");
+    return;
+  }
+  if (!e.target.closest(".save-indicator-wrapper")) {
+    document.getElementById("save-tooltip").classList.remove("is-visible");
+  }
+
+  // Add zur Plan
+  const addId = e.target.closest("[data-add]")?.dataset.add;
+  if (addId) {
+    if (!state.middleIds.includes(addId)) {
+      state.middleIds.push(addId);
+      updatePlan();
+    }
+    return;
+  }
+
+  // Remove aus Plan
+  const removeId = e.target.closest("[data-remove]")?.dataset.remove;
+  if (removeId) {
+    state.middleIds = state.middleIds.filter(id => id !== removeId);
+    updatePlan();
+    return;
+  }
+
+  // Info-Panel öffnen
+  const infoId = e.target.closest("[data-info]")?.dataset.info;
+  if (infoId) {
+    openInfoPanel(infoId);
+    return;
+  }
+
+  // Einstieg-Switch
+  const einstiegChoice = e.target.closest("[data-einstieg]")?.dataset.einstieg;
+  if (einstiegChoice && einstiegChoice !== state.einstiegId) {
+    state.einstiegId = einstiegChoice;
+    updatePlan();
+    return;
+  }
+
+  // Filter-Chip
+  const filterChip = e.target.closest("[data-filter]");
+  if (filterChip) {
+    state.filter = filterChip.dataset.filter;
+    document.querySelectorAll(".chip").forEach(c => c.classList.toggle("active", c === filterChip));
+    renderLibrary();
+    initSortable();
+  }
+
+  // Drucken-Dropdown
+  if (e.target.closest("#print-trigger")) {
+    const isOpen = dropdown.classList.toggle("is-open");
+    document.getElementById("print-trigger").setAttribute("aria-expanded", String(isOpen));
+    return;
+  }
+
+  // Drucken-Item
+  const printChoice = e.target.closest("[data-print]")?.dataset.print;
+  if (printChoice) {
+    printWithRules = (printChoice === "rules");
+    dropdown.classList.remove("is-open");
+    document.getElementById("print-trigger").setAttribute("aria-expanded", "false");
+    setTimeout(() => window.print(), 100); // kurzes Delay, sodass Dropdown sauber schließt
+    return;
+  }
+
+  // Info-Panel-Add-Button
+  if (e.target.id === "info-add-btn" && !e.target.disabled) {
+    const id = e.target.dataset.id;
+    if (id && !state.middleIds.includes(id)) {
+      state.middleIds.push(id);
+      updatePlan();
+      closeInfoPanel();
+    }
+  }
+});
+
+document.getElementById("info-close").addEventListener("click", closeInfoPanel);
+document.getElementById("info-backdrop").addEventListener("click", closeInfoPanel);
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    closeInfoPanel();
+    document.getElementById("save-tooltip").classList.remove("is-visible");
+    const dropdown = document.getElementById("print-dropdown");
+    dropdown.classList.remove("is-open");
+    document.getElementById("print-trigger").setAttribute("aria-expanded", "false");
+  }
+});
+
+document.getElementById("plan-name").addEventListener("input", (e) => {
+  state.planName = e.target.value;
+  saveState();
+});
+
+document.getElementById("plan-name-edit-btn").addEventListener("click", () => {
+  const input = document.getElementById("plan-name");
+  input.focus();
+  input.select();
+});
+
+document.getElementById("reset-btn").addEventListener("click", () => {
+  if (confirm("Möchtest du deinen Trainingsplan wirklich zurücksetzen?")) {
+    state.middleIds = [];
+    state.einstiegId = "E2";
+    state.planName = "Mein Cool-and-Fair-Training";
+    document.getElementById("plan-name").value = state.planName;
+    updatePlan();
+  }
+});
+
+// ======= PRINT VIEW =======
+function buildPrintView() {
+  const view = document.getElementById("print-view");
+
+  const allIds = [state.einstiegId, ...state.middleIds, "E3"];
+  const exs = allIds.map(id => findEx(id)).filter(Boolean);
+  const totalMin = exs.reduce((s, e) => s + e.dauer, 0);
+  const date = new Date().toLocaleDateString("de-DE", { day: "2-digit", month: "long", year: "numeric" });
+
+  let html = `
+    <section class="print-cover">
+      <div class="print-eyebrow">Cool and Fair · Trainingsplan</div>
+      <h1 class="print-title">${state.planName}</h1>
+      <div class="print-meta">
+        <div class="print-meta-item">
+          <div class="label">Übungen</div>
+          <div class="value">${exs.length}</div>
+        </div>
+        <div class="print-meta-item">
+          <div class="label">Gesamtdauer</div>
+          <div class="value">${totalMin} Min</div>
+        </div>
+        <div class="print-meta-item">
+          <div class="label">Erstellt am</div>
+          <div class="value">${date}</div>
+        </div>
+      </div>
+      <div class="print-ruf">
+        <div class="print-ruf-label">Cool-and-Fair-Ruf</div>
+        <div class="print-ruf-text">Wir sind cool. Wir sind fair. Wir sind ein Team.</div>
+      </div>
+      <h2 class="print-overview-title">Übersicht</h2>
+      <ul class="print-overview-list">
+        ${exs.map(e => `
+          <li>
+            <span class="ov-id">${e.id}</span>
+            <span class="ov-title">${e.title}</span>
+            <span class="ov-meta">${e.dauer} Min · ${e.catLabel}</span>
+          </li>
+        `).join("")}
+      </ul>
+    </section>
+    <section>
+      ${exs.map((e, idx) => `
+        <article class="print-exercise">
+          <div class="print-exercise-header">
+            <div class="print-exercise-id">${e.id}</div>
+            <h3 class="print-exercise-title">${e.title}</h3>
+          </div>
+          <div class="print-exercise-meta">${idx + 1} von ${exs.length} · ${e.dauer} Min · ${e.catLabel}</div>
+          <div class="print-block-label">Ziel</div>
+          <div class="print-block-content"><p>${e.ziel}</p></div>
+          <div class="print-block-label">Ablauf</div>
+          <div class="print-block-content">${e.ablauf.split("\n\n").map(p => `<p>${p.replace(/\n/g, "<br>")}</p>`).join("")}</div>
+          ${e.variation ? `
+            <div class="print-block-label">Variation</div>
+            <div class="print-block-content">${e.variation.split("\n\n").map(p => `<p>${p.replace(/\n/g, "<br>")}</p>`).join("")}</div>
+          ` : ""}
+          <div class="print-block-label">Reflexionsfragen</div>
+          <div class="print-block-content"><p>${e.reflexion}</p></div>
+        </article>
+      `).join("")}
+    </section>
+    ${printWithRules ? `
+    <section class="print-rules">
+      <h2 class="print-rules-title">Cool-and-Fair-Regeln</h2>
+      <ol class="print-rules-list">
+        <li>
+          <h4>Cool-and-Fair-Kinder verletzen und beschimpfen sich nicht.</h4>
+          <ul>
+            <li>Wir sagen, wie wir uns fühlen und was wir wollen oder nicht wollen.</li>
+            <li>Wir sind ehrlich.</li>
+            <li>Wir halten Vereinbarungen und Regeln ein.</li>
+          </ul>
+        </li>
+        <li>
+          <h4>Cool-and-Fair-Kinder sind nicht nur sportlich, sondern auch schlau.</h4>
+          <ul>
+            <li>Wir denken uns Handlungsweisen aus, die wir verfolgen können.</li>
+            <li>Wir denken uns Problemlösungen aus.</li>
+          </ul>
+        </li>
+        <li>
+          <h4>Cool-and-Fair-Kinder lassen sich nicht ärgern oder provozieren.</h4>
+          <ul>
+            <li>Wir widerstehen, zu stehlen und zu zerstören.</li>
+            <li>Wir halten uns an unsere Vereinbarungen und Regeln.</li>
+          </ul>
+        </li>
+        <li>
+          <h4>Cool-and-Fair-Kinder sind stets fair und sozial.</h4>
+          <ul>
+            <li>Wir haben Achtung vor anderen Menschen und zeigen Respekt.</li>
+            <li>Wir sind tolerant und nehmen Rücksicht.</li>
+            <li>Wir sind hilfsbereit und ein Team.</li>
+          </ul>
+        </li>
+      </ol>
+    </section>
+    ` : ""}
+    <footer class="print-footer">
+      <div>Cool and Fair · coolandfair.de</div>
+      <div>SMOG e.V. · SG Neuenstein</div>
+    </footer>
+  `;
+  view.innerHTML = html;
+}
+
+window.addEventListener("beforeprint", buildPrintView);
+
+// ======= IFRAME HEIGHT REPORTER =======
+function sendHeight() {
+  window.parent.postMessage({ iframeHeight: document.documentElement.scrollHeight }, '*');
+}
+window.addEventListener('resize', sendHeight);
+document.addEventListener('exercises-loaded', () => setTimeout(sendHeight, 100));
+
+// ======= INIT =======
+async function init() {
+  // Ladescreen anzeigen
+  document.getElementById('library-list').innerHTML = `
+    <div style="padding:2rem 1.5rem;display:flex;flex-direction:column;gap:0.75rem;">
+      ${[1,2,3,4,5].map(() => `
+        <div style="height:72px;background:var(--gray-100);border-radius:12px;animation:shimmer 1.2s infinite linear;background-size:200% 100%;background-image:linear-gradient(90deg,var(--gray-100) 0%,var(--gray-50) 50%,var(--gray-100) 100%);"></div>
+      `).join('')}
+    </div>
+    <style>@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}</style>
+  `;
+
+  // CMS laden
+  await loadExercisesFromCMS();
+
+  // State initialisieren
+  loadState();
+  document.getElementById("plan-name").value = state.planName;
+
+  const activeChip = document.querySelector(`[data-filter="${state.filter}"]`);
+  if (activeChip) {
+    document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+    activeChip.classList.add("active");
+  }
+
+  renderLibrary();
+  renderPlan();
+  renderStats();
+  document.dispatchEvent(new Event('exercises-loaded'));
+}
+
+function updatePlan() {
+  saveState();
+  renderPlan();
+  renderStats();
+  setTimeout(sendHeight, 50);
+}
+
+init();
+</script>
+</body>
+</html>
