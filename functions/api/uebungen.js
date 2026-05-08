@@ -29,10 +29,16 @@ export async function onRequest(context) {
 
   const data = await response.json();
 
+  const KATEGORIE_MAP = {
+    'd6e2079fd7f035f0976fbb0ed66fb499': 'einstieg',
+    '2516088007e8ab1f4cd4cd38a90161d7': 'bewegung',
+    '751627fd7f499cdd733b578e43dcd970': 'team',
+  };
+
   const exercises = data.items.map(item => ({
     id:        item.fieldData['ubungs-id'],
     title:     item.fieldData['name'],
-    cat:       item.fieldData['kategorie'],
+    cat:       KATEGORIE_MAP[item.fieldData['kategorie']] || item.fieldData['kategorie'],
     catLabel:  item.fieldData['kategorie-label'],
     dauer:     item.fieldData['dauer-minuten'],
     ziel:      item.fieldData['ziel'],
