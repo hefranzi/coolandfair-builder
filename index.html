@@ -781,25 +781,29 @@
 
   .info-panel {
     position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    max-width: 540px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -46%);
+    width: calc(100% - 2rem);
+    max-width: 560px;
+    max-height: 85vh;
     background: white;
     z-index: 51;
-    transform: translateX(100%);
-    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.25s;
+    border-radius: var(--radius-lg);
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease, visibility 0s linear 0.25s;
     display: flex;
     flex-direction: column;
-    box-shadow: none;
-    visibility: hidden;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.18), 0 4px 16px rgba(0,0,0,0.08);
   }
   .info-panel.is-open {
-    transform: translateX(0);
-    box-shadow: -8px 0 32px rgba(0,0,0,0.1);
+    transform: translate(-50%, -50%);
+    opacity: 1;
+    pointer-events: auto;
     visibility: visible;
-    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0s;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease, visibility 0s linear 0s;
   }
 
   .info-panel-header {
@@ -1061,8 +1065,14 @@
     .header-title { font-size: 1.25rem; }
     .header-right { width: 100%; justify-content: flex-start; }
     .plan-stats { grid-template-columns: 1fr; }
-    .info-panel { max-width: 100%; }
     .icon-btn { width: 28px; height: 28px; font-size: 0.875rem; }
+  }
+
+  /* TOUCH DEVICES: kein DnD, kompakteres Layout */
+  @media (pointer: coarse) {
+    .drag-handle { display: none; }
+    .position-badge { width: 22px; height: 22px; font-size: 0.65rem; }
+    .drop-zone { cursor: default; }
   }
 </style>
 </head>
@@ -1452,13 +1462,15 @@ function renderPlan() {
   if (state.middleIds.length === 0) {
     const dz = document.createElement("div");
     dz.className = "drop-zone is-empty";
-    dz.textContent = "Ziehe Übungen hierher oder klick auf das + in der Bibliothek";
+    dz.textContent = isTouchDevice()
+      ? "Tippe auf das + in der Bibliothek um Übungen hinzuzufügen"
+      : "Ziehe Übungen hierher oder klick auf das + in der Bibliothek";
     middleList.appendChild(dz);
   } else {
     const dz = document.createElement("div");
     dz.className = "drop-zone";
     dz.style.padding = "1rem";
-    dz.textContent = "Weitere Übung hierher ziehen";
+    dz.textContent = isTouchDevice() ? "Weitere Übung: + in der Bibliothek tippen" : "Weitere Übung hierher ziehen";
     middleList.appendChild(dz);
   }
   list.appendChild(middleList);
@@ -1529,13 +1541,20 @@ function renderStats() {
 // ======= SORTABLE =======
 let libSortable, middleSortable;
 
+function isTouchDevice() {
+  return window.matchMedia('(pointer: coarse)').matches;
+}
+
 function initSortable() {
   if (libSortable) libSortable.destroy();
   if (middleSortable) middleSortable.destroy();
 
+  const isTouch = isTouchDevice();
   const libList = document.getElementById("library-list");
   const middleList = document.getElementById("middle-list");
-  if (libList) {
+
+  // Library DnD nur auf Desktop – auf Touch scrollt man frei
+  if (libList && !isTouch) {
     libSortable = Sortable.create(libList, {
       group: { name: "shared", pull: "clone", put: false },
       sort: false,
@@ -1549,7 +1568,8 @@ function initSortable() {
 
   if (middleList) {
     middleSortable = Sortable.create(middleList, {
-      group: { name: "shared", pull: false, put: true },
+      // Auf Touch: nur Reihenfolge im Plan ändern, kein Cross-List-Drop aus Library
+      group: isTouch ? { name: "plan-only", pull: false, put: false } : { name: "shared", pull: false, put: true },
       animation: 150,
       ghostClass: "sortable-ghost",
       chosenClass: "sortable-chosen",
