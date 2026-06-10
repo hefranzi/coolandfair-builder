@@ -1076,6 +1076,147 @@
     .position-badge { width: 22px; height: 22px; font-size: 0.65rem; }
     .drop-zone { cursor: default; }
   }
+
+  /* ============================================
+     PLAN-SECTION: DARK MODE (Slate-Grün)
+     ============================================ */
+  :root {
+    --dark-bg:        #1A2B28;
+    --dark-surface:   #243530;
+    --dark-surface2:  #2C403A;
+    --dark-border:    rgba(255,255,255,0.08);
+    --dark-border2:   rgba(255,255,255,0.14);
+    --dark-text:      #E8F0EE;
+    --dark-muted:     #8FADA7;
+    --dark-label:     #6B9990;
+  }
+
+  .plan-section {
+    background: var(--dark-bg);
+    border-color: transparent;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  /* Inneres Column-Div: kein eigener Rahmen, nahtlos */
+  .column.plan-section {
+    border-radius: 0;
+    border-color: transparent;
+    background: var(--dark-bg);
+  }
+
+  /* Plan Header */
+  .plan-section .plan-header {
+    background: var(--dark-surface);
+    border-bottom: 1px solid var(--dark-border);
+  }
+  .plan-section .plan-header h2 { color: var(--dark-label); }
+  .plan-section .plan-name-input { color: var(--dark-text); border-bottom-color: var(--dark-border2); }
+  .plan-section .plan-name-input:hover,
+  .plan-section .plan-name-input:focus { border-bottom-color: var(--dark-text); }
+  .plan-section .plan-name-edit { background: rgba(255,255,255,0.08); color: var(--dark-muted); }
+  .plan-section .plan-name-edit:hover { background: rgba(255,255,255,0.15); color: var(--dark-text); }
+
+  /* Stats-Bereich */
+  .plan-section .plan-stats { padding: 1rem 1.5rem 0.25rem; }
+  .plan-section .dfb-hint { margin: 0; border-radius: 0; }
+  .plan-section .stat-card {
+    background: var(--dark-surface);
+    border-color: var(--dark-border);
+  }
+  .plan-section .stat-label { color: var(--dark-label); }
+  .plan-section .stat-value { color: var(--green-400); }
+  .plan-section .stat-sub { color: var(--dark-muted); }
+  .plan-section .stat-card.complete {
+    background: rgba(79,168,137,0.12);
+    border-color: rgba(79,168,137,0.35);
+  }
+  .plan-section .stat-card.complete .stat-value { color: var(--green-400); }
+  .plan-section .stat-card.incomplete {
+    background: rgba(199,119,0,0.12);
+    border-color: rgba(199,119,0,0.3);
+  }
+  .plan-section .stat-card.incomplete .stat-value { color: #F0A830; }
+
+  /* Stepper */
+  .plan-section .step-dot { background: var(--dark-bg); border-color: var(--dark-border2); }
+  .plan-section .step-label { color: var(--dark-label); }
+  .plan-section .step-line { background: var(--dark-border2); }
+  .plan-section .step-item.done .step-dot { background: var(--green-400); border-color: var(--green-400); }
+  .plan-section .step-item.done .step-label { color: var(--green-400); }
+  .plan-section .step-line.done { background: var(--green-400); }
+
+  /* Plan List */
+  .plan-section .plan-list { background: transparent; }
+  .plan-section .plan-section-divider { color: var(--dark-label); }
+  .plan-section .plan-section-divider::before,
+  .plan-section .plan-section-divider::after { background: var(--dark-border); }
+
+  /* Exercise Cards im Plan */
+  .plan-section .exercise-card,
+  .plan-section .fixed-slot {
+    background: var(--dark-surface);
+    border-color: var(--dark-border);
+  }
+  .plan-section .exercise-card:hover { background: var(--dark-surface2); border-color: var(--dark-border2); }
+  .plan-section .exercise-title { color: var(--dark-text); }
+  .plan-section .exercise-meta { color: var(--dark-muted); }
+  .plan-section .drag-handle span { background: var(--dark-border2); }
+  .plan-section .drag-handle { color: var(--dark-border2); }
+
+  /* Position Badge im Plan */
+  .plan-section .position-badge {
+    background: rgba(255,255,255,0.12);
+    color: var(--dark-text);
+  }
+  .plan-section .position-badge.fixed {
+    background: rgba(255,255,255,0.07);
+    color: var(--dark-muted);
+  }
+
+  /* Icon Buttons im Plan */
+  .plan-section .icon-btn {
+    background: rgba(255,255,255,0.07);
+    color: var(--dark-muted);
+    border-color: var(--dark-border);
+  }
+  .plan-section .icon-btn:hover {
+    background: rgba(255,255,255,0.14);
+    color: var(--dark-text);
+    border-color: var(--dark-border2);
+  }
+
+  /* Einstieg Switch */
+  .plan-section .einstieg-switch-label { color: var(--dark-muted); }
+  .plan-section .einstieg-switch {
+    background: var(--dark-bg);
+    border-color: var(--dark-border2);
+  }
+  .plan-section .einstieg-switch button { color: var(--dark-muted); }
+  .plan-section .einstieg-switch button:hover { color: var(--dark-text); }
+  .plan-section .einstieg-switch button.active { background: var(--green-400); color: #0A1F1C; }
+
+  /* Slot Lock Icon */
+  .plan-section .slot-lock { color: var(--dark-border2); }
+
+  /* Drop Zone */
+  .plan-section .drop-zone {
+    border-color: var(--dark-border2);
+    color: var(--dark-muted);
+  }
+  .plan-section .drop-zone.is-active {
+    border-color: var(--green-400);
+    background: rgba(79,168,137,0.08);
+    color: var(--green-400);
+  }
+
+  /* DFB Hint */
+  .plan-section .dfb-hint {
+    background: rgba(79,168,137,0.08);
+    border-top: 1px solid var(--dark-border);
+  }
+  .plan-section .dfb-hint-label { color: var(--green-400); }
+  .plan-section .dfb-hint-text { color: var(--dark-muted); }
+  .plan-section .dfb-hint-text a { color: var(--green-400); }
 </style>
 </head>
 <body>
@@ -1161,7 +1302,7 @@
           </div>
         </div>
 
-        <div class="column">
+        <div class="column plan-section">
           <div class="plan-header">
             <div class="plan-header-content">
               <h2>Dein Trainingsplan</h2>
