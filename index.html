@@ -21,14 +21,14 @@
     --blue-50: #D5EAF7;
     --blue-400: #3DAEE9;
 
-    --gray-25: #FCFCFB;
-    --gray-50: #F7F6F4;
-    --gray-100: #EFEDE9;
-    --gray-200: #DDD9D2;
-    --gray-300: #C2BCB1;
-    --gray-400: #A19A8E;
-    --gray-600: #5C564B;
-    --gray-900: #171410;
+    --gray-25: #FCFCFC;
+    --gray-50: #F7F7F7;
+    --gray-100: #EFEFEF;
+    --gray-200: #DDDDDD;
+    --gray-300: #C2C2C2;
+    --gray-400: #A1A1A1;
+    --gray-600: #5C5C5C;
+    --gray-900: #171717;
 
     --warning-bg: #FFF8E1;
     --warning-border: #FFD89A;
@@ -38,7 +38,7 @@
     --radius-md: 12px;
     --radius-lg: 16px;
 
-    --content-max: 80rem;
+    --content-max: 1600px;
     --content-padding: 2.5rem;
 
     --font-display: "Burbank Big Cond Black", "Inter", system-ui, sans-serif;
@@ -49,11 +49,10 @@
 
   html, body {
     font-family: var(--font-body);
-    background: transparent;
+    background: var(--gray-50);
     color: var(--gray-900);
     font-size: 16px;
     line-height: 1.5;
-    overflow-x: hidden;
   }
 
   .app { min-height: 100vh; padding-bottom: 4rem; }
@@ -93,7 +92,18 @@
     line-height: 1.1;
     letter-spacing: -0.01em;
   }
-  .header-right { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .header-buttons {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: nowrap;
+  }
 
   /* SAVE INDICATOR + TOOLTIP */
   .save-indicator-wrapper {
@@ -262,6 +272,7 @@
     gap: 2rem;
     margin-top: 2rem;
   }
+  .main > * { min-width: 0; }
 
   .column {
     background: white;
@@ -364,6 +375,18 @@
     background: var(--gray-400);
     border-radius: 999px;
   }
+  .slot-lock {
+    width: 16px;
+    flex-shrink: 0;
+    color: var(--gray-300);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .slot-lock svg {
+    width: 13px;
+    height: 13px;
+  }
 
   .position-badge {
     width: 28px;
@@ -385,7 +408,8 @@
 
   .color-bar {
     width: 4px;
-    height: 40px;
+    min-height: 32px;
+    align-self: stretch;
     border-radius: 2px;
     flex-shrink: 0;
   }
@@ -393,19 +417,6 @@
   .color-bar.cat-bewegung { background: var(--green-400); }
   .color-bar.cat-team { background: var(--blue-400); }
 
-  .exercise-id {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    background: var(--green-50);
-    color: var(--green-700);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 900;
-    font-size: 0.75rem;
-    flex-shrink: 0;
-  }
 
   .exercise-content {
     flex: 1;
@@ -419,22 +430,27 @@
     font-size: 0.875rem;
     color: var(--gray-900);
     line-height: 1.3;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
   .exercise-meta {
     font-size: 0.75rem;
     color: var(--gray-600);
     font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
+    line-height: 1.4;
   }
+  .meta-id {
+    font-weight: 500;
+  }
+  .meta-id.cat-einstieg { color: var(--red-400); }
+  .meta-id.cat-bewegung { color: var(--green-400); }
+  .meta-id.cat-team { color: var(--blue-400); }
+
   .meta-lock {
     width: 11px;
     height: 11px;
-    flex-shrink: 0;
+    display: inline-block;
+    vertical-align: middle;
     margin-right: 0.1rem;
     color: var(--gray-400);
   }
@@ -512,6 +528,55 @@
   .stat-card.complete .stat-value { color: var(--green-700); }
   .stat-card.incomplete { border-color: var(--warning-border); background: var(--warning-bg); }
   .stat-card.incomplete .stat-value { color: var(--warning-text); }
+
+  /* STRUCTURE STEPPER */
+  .struct-stepper {
+    display: flex;
+    align-items: center;
+    margin-top: 0.6rem;
+  }
+  .step-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    flex-shrink: 0;
+  }
+  .step-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 999px;
+    border: 2px solid var(--gray-300);
+    background: white;
+    transition: all 0.25s ease;
+  }
+  .step-item.done .step-dot {
+    background: var(--green-400);
+    border-color: var(--green-400);
+  }
+  .step-label {
+    font-size: 0.575rem;
+    font-weight: 600;
+    color: var(--gray-400);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    transition: color 0.25s ease;
+  }
+  .step-item.done .step-label {
+    color: var(--green-700);
+  }
+  .step-line {
+    flex: 1;
+    height: 2px;
+    background: var(--gray-200);
+    margin: 0 0.2rem;
+    margin-bottom: 1rem;
+    transition: background 0.25s ease;
+  }
+  .step-line.done {
+    background: var(--green-400);
+  }
 
   .plan-header {
     background: var(--green-700);
@@ -819,13 +884,6 @@
     line-height: 1.6;
     white-space: pre-wrap;
   }
-  .info-block-content p { margin-bottom: 0.75rem; }
-  .info-block-content p:last-child { margin-bottom: 0; }
-  .info-block-content ul, .info-block-content ol {
-    padding-left: 1.25rem;
-    margin-bottom: 0.75rem;
-  }
-  .info-block-content li { margin-bottom: 0.25rem; }
 
   .info-panel-footer {
     padding: 1.25rem 2rem;
@@ -970,6 +1028,22 @@
     }
   }
 
+  /* EMBED / SCHMAL (768px) – Switch umbrechen */
+  @media (max-width: 768px) {
+    .fixed-slot { flex-wrap: wrap; }
+    .einstieg-switch-wrapper {
+      order: 10;
+      width: 100%;
+      margin-left: 0;
+      padding-left: 0;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--gray-100);
+      flex-direction: row;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  }
+
   /* SMARTPHONE (600px) */
   @media (max-width: 600px) {
     :root { --content-padding: 1rem; }
@@ -978,11 +1052,7 @@
     .header-right { width: 100%; justify-content: flex-start; }
     .plan-stats { grid-template-columns: 1fr; }
     .info-panel { max-width: 100%; }
-    .einstieg-switch-wrapper {
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 0.25rem;
-    }
+    .icon-btn { width: 28px; height: 28px; font-size: 0.875rem; }
   }
 </style>
 </head>
@@ -1003,6 +1073,7 @@
             Dein Trainingsplan wird automatisch in deinem Browser gespeichert. Beim nächsten Besuch ist alles wieder da. Es werden keine Daten an uns oder andere Server geschickt.
           </div>
         </div>
+        <div class="header-buttons">
         <button class="btn btn-secondary" id="reset-btn">Zurücksetzen</button>
         <div class="print-dropdown" id="print-dropdown">
           <button class="btn btn-primary print-dropdown-trigger" id="print-trigger" aria-haspopup="true" aria-expanded="false">
@@ -1016,6 +1087,7 @@
             <button class="print-dropdown-item" role="menuitem" data-print="rules">Mit CaF-Regeln drucken</button>
           </div>
         </div>
+        </div><!-- /.header-buttons -->
       </div>
     </header>
 
@@ -1047,8 +1119,23 @@
           </div>
           <div class="stat-card" id="stat-structure-card">
             <div class="stat-label">Struktur</div>
-            <div class="stat-value" id="stat-structure">Beginne</div>
-            <div class="stat-sub" id="stat-structure-sub">Bewegung + Teambesprechung fehlen</div>
+            <div class="stat-value" id="stat-structure">Leg los!</div>
+            <div class="struct-stepper" id="struct-stepper">
+              <div class="step-item" id="step-bewegung">
+                <div class="step-dot"></div>
+                <div class="step-label">Bewegung</div>
+              </div>
+              <div class="step-line" id="step-line-1"></div>
+              <div class="step-item" id="step-team">
+                <div class="step-dot"></div>
+                <div class="step-label">Teambesprechung</div>
+              </div>
+              <div class="step-line" id="step-line-2"></div>
+              <div class="step-item" id="step-complete">
+                <div class="step-dot"></div>
+                <div class="step-label">Vollständig</div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1120,31 +1207,109 @@
 </div>
 
 <script>
-// ======= DATEN (werden beim Start vom CMS geladen) =======
-let EXERCISES = [];
+// ======= DATEN (Übungen mit gegenderten Texten) =======
+const EXERCISES = [
+  { id: "E1", nr: 1, cat: "einstieg", catLabel: "Einstieg & Abschluss", title: "Initialer Einstieg in das 1. Training", dauer: 10,
+    ziel: "Die Kinder und ihre Erwartungen kennenlernen sowie gemeinsame Ziele festlegen.",
+    ablauf: "Alle Kinder positionieren sich im Halbkreis vor der trainierenden Person. Sie werden begrüßt und gefragt, welche Ziele sie mit dem Training erreichen wollen. Gemeinsam werden die Ziele formuliert und festgelegt.\n\nMögliche gemeinsame Ziele:\n• Wir wollen zusammen Sport machen und spielen.\n• Wir wollen fair miteinander umgehen und uns gegenseitig achten.\n• Wir wollen Probleme und Konflikte gemeinsam lösen.",
+    reflexion: "Welche Ziele und damit verbundene Werte sind uns wichtig? Finden sich alle bei den Zielen wieder?" },
+  { id: "E2", nr: 2, cat: "einstieg", catLabel: "Einstieg & Abschluss", title: "Einstieg in die folgenden Trainings", dauer: 10,
+    ziel: "Erinnerung an die Ziele des letzten Trainings aktivieren und das Miteinander weiter stärken.",
+    ablauf: "Alle Kinder stehen im Kreis, halten sich an den Händen und starten gemeinsam mit dem Cool-and-Fair-Ruf. Anschließend hat jedes Kind die Möglichkeit, eine Rückmeldung zum vorherigen Training zu geben. Gemeinsam wird besprochen, welche Trainingsinhalte besonders wichtig waren und worauf es heute ankommt.",
+    reflexion: "Welche Werte sind uns wichtig und wie haben wir sie seit dem letzten Mal umgesetzt?" },
+  { id: "E3", nr: 3, cat: "einstieg", catLabel: "Einstieg & Abschluss", title: "Abschluss-Fazit und Cool-and-Fair-Ruf", dauer: 10,
+    ziel: "Erkenntnisse reflektieren, Einsichten formulieren und mitnehmen sowie das Training abschließen.",
+    ablauf: "Alle Kinder stellen sich oder setzen sich am Ende jedes Trainings im Halbkreis vor die trainierende Person, die Folgendes vermittelt:\n\nWir sind alle unterschiedlich und das ist gut so. Jeder kann stolz auf sich sein. Wir beschimpfen niemanden und tun niemandem etwas Schlechtes. Wir sind freundlich und behandeln alle gut.\n\nAnschließend fassen sich alle an den Händen und rufen gemeinsam den Cool-and-Fair-Ruf.",
+    reflexion: "Welche Erkenntnisse nimmt jedes Kind für sich und welche das Team insgesamt mit?" },
 
-async function loadExercisesFromCMS() {
-  try {
-    const response = await fetch('/api/uebungen?v=' + Date.now());
-    if (!response.ok) throw new Error('CMS nicht erreichbar');
-    EXERCISES = await response.json();
-  } catch (e) {
-    console.error('CMS-Fehler:', e);
-    showLoadError();
-  }
-}
+  { id: "B1", nr: 1, cat: "bewegung", catLabel: "Trainingsformen in der Bewegung", title: "Aufwärm- und Kennenlernspiel mit Ball", dauer: 10,
+    ziel: "Die Kinder und ihre Erwartungen kennenlernen und gemeinsame Ziele festlegen.",
+    ablauf: "Alle Kinder stehen im Kreis. Ein Ball wird zugeworfen. Wer wirft, läuft hinter dem Ball her und übernimmt die Position des fangenden Kindes. Wer den Ball fängt, nennt den eigenen Namen und den Lieblingsverein.",
+    variation: "Die Kinder laufen locker im abgesteckten Feld. Die trainierende Person wirft den Ball zu einem Kind. Die anderen nennen den Lieblingsverein des angespielten Kindes.",
+    reflexion: "Welche Ziele und Werte sind uns wichtig? Erkennen sich alle Kinder in diesen Zielen wieder?" },
+  { id: "B2", nr: 2, cat: "bewegung", catLabel: "Trainingsformen in der Bewegung", title: "Brückenwächter:in", dauer: 15,
+    ziel: "Enge Ballführung verbessern, Kooperation und Taktikentwicklung fördern.",
+    ablauf: "Zwei markierte Vierecke werden über eine Brücke miteinander verbunden. In den Vierecken dribbeln die Kinder mit dem Ball am Fuß und versuchen, über die Brücke in das andere Feld zu gelangen. Ein Kind übernimmt die Rolle der Wächterin oder des Wächters und steht auf der Brücke. Es versucht, die Bälle der dribbelnden Kinder von der Brücke zu spielen.",
+    variation: "• Wer die andere Seite erreicht, erhält einen Punkt.\n• Teams bilden, jedes Team stellt eine eigene Wächterin oder einen eigenen Wächter.",
+    reflexion: "Was hat gut funktioniert? Wie kann man die Aufgabe gemeinsam besser lösen?" },
+  { id: "B3", nr: 3, cat: "bewegung", catLabel: "Trainingsformen in der Bewegung", title: "Wir sind alle verschieden und doch gleich", dauer: 10,
+    ziel: "Vielfalt wahrnehmen und Gemeinsamkeiten entdecken.",
+    ablauf: "Alle Kinder stehen mit einem Ball auf einer Startlinie. Auf Kommando dribbeln sie etwa 20 Meter bis zur Wendemarke und zurück. Anschließend werden verschiedene Kategorien aufgerufen (z. B. Alle mit braunen Augen, Alle Linksfüßler:innen). Alle Kinder, die zur genannten Kategorie gehören, dribbeln erneut zur Wendemarke und zurück.",
+    reflexion: "Welche Gemeinsamkeiten haben wir? Wie fühlt es sich an, allein oder in einer großen Gruppe zu sein?" },
+  { id: "B4", nr: 4, cat: "bewegung", catLabel: "Trainingsformen in der Bewegung", title: "Dribbling im Feld", dauer: 15,
+    ziel: "Enge Ballführung verbessern, Kooperation und Taktikentwicklung fördern.",
+    ablauf: "Alle Kinder dribbeln in einem markierten Feld. Im Feld werden mehrere Hütchen aufgestellt, eines weniger als Kinder teilnehmen. Auf ein Signal hin versucht jedes Kind, eines der Hütchen zu besetzen. Wer kein Hütchen findet, absolviert eine zuvor vereinbarte Übung.",
+    reflexion: "Was hat gut funktioniert? Wie kann man die Aufgabe gemeinsam besser lösen?" },
+  { id: "B5", nr: 5, cat: "bewegung", catLabel: "Trainingsformen in der Bewegung", title: "Katz und Maus", dauer: 10,
+    ziel: "Verbesserung von Balltechnik, Beweglichkeit, Schnelligkeit, Reaktionsvermögen und Teamarbeit.",
+    ablauf: "Im Mittelkreis dribbeln die Kinder (Mäuse) frei im Raum mit enger Ballführung. Zwei Kinder ohne Ball versuchen als Katzen, die Mäuse mit den Händen zu berühren. Jede Maus kann sich schützen, indem sie auf ihren Ball tritt. Wer abgeschlagen wird, fängt als Katze weiter mit.",
+    reflexion: "Was hat geholfen, nicht gefangen zu werden? Wie wichtig war Zusammenarbeit?" },
+  { id: "B6", nr: 6, cat: "bewegung", catLabel: "Trainingsformen in der Bewegung", title: "Blind aufeinander verlassen", dauer: 15,
+    ziel: "Koordination und Teamarbeit stärken, Vertrauen zueinander aufbauen.",
+    ablauf: "Pendelstaffel mit zwei Teams in Paaren. Einem Kind pro Paar werden die Augen verbunden. Das sehende Kind führt das andere nur mit mündlichen Anweisungen durch einen Parcours.",
+    reflexion: "Wie war es, sich nur auf das andere Kind zu verlassen? Welche Anweisungen waren besonders hilfreich?" },
+  { id: "B7", nr: 7, cat: "bewegung", catLabel: "Trainingsformen in der Bewegung", title: "Porzellanladen", dauer: 15,
+    ziel: "Koordination, Teamgeist und klare Kommunikation stärken, Verantwortung füreinander übernehmen.",
+    ablauf: "Pendelstaffel mit zwei Teams. Auf zwei Feldern werden mehrere Hütchen aufgestellt. Ein Kind pro Team trägt eine Augenbinde und durchquert den Parcours, ohne ein Hütchen zu berühren, geleitet von Anweisungen der Mitspieler:innen.",
+    reflexion: "Warum war klare Kommunikation wichtig? Was hat geholfen?" },
+  { id: "B8", nr: 8, cat: "bewegung", catLabel: "Trainingsformen in der Bewegung", title: "Los – Stopp!", dauer: 15,
+    ziel: "Konzentration, Reaktionsvermögen, Schnelligkeit, Impulskontrolle und Wahrnehmungsfähigkeit verbessern.",
+    ablauf: `Die trainierende Person steht mit dem Rücken zur Gruppe. Auf „Los!" sprinten die Kinder zur Ziellinie. Beim „Stopp!" bleiben sie sofort stehen. Wer sich noch bewegt hat, muss zurück.`,
+    reflexion: "Wie gehe ich damit um, wenn ich zurück muss? Wie schnell kann ich mich selbst bremsen?" },
+  { id: "B9", nr: 9, cat: "bewegung", catLabel: "Trainingsformen in der Bewegung", title: "Wer hat die meisten Leibchen?", dauer: 15,
+    ziel: "Koordination, Schnelligkeit, Beweglichkeit und taktisches Verhalten verbessern, Frustrationstoleranz stärken.",
+    ablauf: "Alle Kinder außer einem tragen ein Leibchen im Hosenbund. Das Kind ohne Leibchen versucht, möglichst viele Leibchen zu erbeuten. Wer sein Leibchen verliert, scheidet aus.",
+    reflexion: "Was war effektiv? Wie gehe ich mit dem Ausscheiden um?" },
+  { id: "B10", nr: 10, cat: "bewegung", catLabel: "Trainingsformen in der Bewegung", title: "Sprints mit Denksportaufgaben", dauer: 15,
+    ziel: "Komplexität der Aufgabe erkennen, Verbindung von Bewegung und Denken fördern, unterschiedliche Fähigkeiten im Team nutzen.",
+    ablauf: "Zwei Teams dribbeln in einem Feld, etwa 20 Meter von der trainierenden Person entfernt. Auf Zuruf sprintet ein Kind aus jeder Mannschaft mit Ball nach vorn, holt eine Frage ab und dribbelt zurück zum Team. Dort wird die Antwort gemeinsam besprochen.",
+    reflexion: "Was war wichtiger: Schnelligkeit oder Wissen? Wie können unterschiedliche Stärken das gemeinsame Ergebnis verbessern?" },
+  { id: "B11", nr: 11, cat: "bewegung", catLabel: "Trainingsformen in der Bewegung", title: "Fußball ohne Regeln", dauer: 15,
+    ziel: "Regelbewusstsein und Entscheidungen reflektieren.",
+    ablauf: "Zwei Teams spielen 4 gegen 4 auf kleine Tore. Es gibt bewusst keine festen Regeln. Einzige Bedingung: niemand wird gefoult oder verletzt. Im Anschluss wird das Spiel gemeinsam ausgewertet.",
+    reflexion: "Warum gibt es Regeln? Welche waren notwendig? Wie hat sich das Spielen ohne Regeln angefühlt?" },
+  { id: "B12", nr: 12, cat: "bewegung", catLabel: "Trainingsformen in der Bewegung", title: "Schiedsrichter:innen-Fehlentscheidungen", dauer: 15,
+    ziel: "Umgang mit Ärger, Wut, Frustration und Impulskontrolle verbessern.",
+    ablauf: "Zwei Teams spielen, die trainierende Person übernimmt bewusst die Rolle der Schiedsrichterin oder des Schiedsrichters und trifft absichtlich klare Fehlentscheidungen. Die Reaktionen der Kinder werden beobachtet.",
+    reflexion: "Wie fühlt sich Benachteiligung an und wie gehen wir mit Frustration um, ohne die Kontrolle zu verlieren?" },
+  { id: "B13", nr: 13, cat: "bewegung", catLabel: "Trainingsformen in der Bewegung", title: "Das Elefantenspiel", dauer: 15,
+    ziel: "Kraft gemeinsam einsetzen (Elefanten), Teamtaktik entwickeln (Löwen).",
+    ablauf: "Bis auf zwei Kinder bilden alle gemeinsam einen Elefanten, indem sie sich festhalten. Der Elefant versucht, sich gegen Angriffe von außen abzuschirmen. Die beiden Löwen versuchen durch Ziehen, einzelne Kinder aus dem Elefanten herauszulösen. Schlagen, Treten und Spucken sind nicht erlaubt.",
+    reflexion: "Was machte die Elefanten stark? Warum war es möglich oder nicht möglich, einzelne Kinder herauszulösen?" },
 
-function showLoadError() {
-  document.getElementById('library-list').innerHTML = `
-    <div style="padding:2rem;text-align:center;color:var(--gray-600);font-size:0.875rem;line-height:1.6;">
-      <div style="font-size:2rem;margin-bottom:0.5rem;">⚠️</div>
-      Die Übungen konnten nicht geladen werden.<br>
-      Bitte Seite neu laden oder später nochmal versuchen.
-    </div>
-  `;
-}
-
-// EXERCISES wird beim Start via loadExercisesFromCMS() befüllt.
+  { id: "T1", nr: 1, cat: "team", catLabel: "Übungen für Teambesprechungen", title: "Wodurch unterscheiden sich Menschen?", dauer: 15,
+    ziel: "Verständnis für Vielfalt und individuelle Unterschiede fördern.",
+    ablauf: "Zwei Teams notieren in 10 Minuten so viele Merkmale wie möglich, durch die sich Menschen unterscheiden können. Anschließend werden die gesammelten Unterschiede gemeinsam besprochen.",
+    reflexion: "Warum sind Unterschiede wertvoll? Welche Vorteile bringt Vielfalt?" },
+  { id: "T2", nr: 2, cat: "team", catLabel: "Übungen für Teambesprechungen", title: "Wie wollen wir cool und fair werden?", dauer: 15,
+    ziel: "Gemeinsame Werte und Verhaltensweisen erarbeiten.",
+    ablauf: "Alle Kinder im Halbkreis. Gemeinsam werden Ideen gesammelt, wie man sich cool und fair verhält. Die Vorschläge werden auf einem Plakat festgehalten. Themenbereiche: Sportlich sein, Friedlich sein, Stark sein, Schlau sein, Sozial sein.",
+    reflexion: "Welche Eigenschaften sind besonders wichtig? Welche Regeln helfen uns, besser miteinander umzugehen?" },
+  { id: "T3", nr: 3, cat: "team", catLabel: "Übungen für Teambesprechungen", title: "Einzigartigkeit", dauer: 10,
+    ziel: "Eigene Stärken erkennen und benennen, Selbstbewusstsein und Teamgeist fördern.",
+    ablauf: `Im Halbkreis. Jedes Kind beantwortet: Was magst du an dir selbst? Was ist an dir etwas Besonderes? Sage: „Ich bin etwas Besonderes, weil…" Zum Abschluss klopft sich jedes Kind auf die eigene Schulter.`,
+    reflexion: "Wir haben alle besondere Stärken, die dem Team helfen können. Wir erkennen unsere eigenen Fähigkeiten, ohne uns mit anderen zu vergleichen." },
+  { id: "T4", nr: 4, cat: "team", catLabel: "Übungen für Teambesprechungen", title: "Wertschätzung der Mitspieler:innen", dauer: 10,
+    ziel: "Die Stärken der anderen erkennen und benennen, Respekt und Anerkennung ausdrücken.",
+    ablauf: "Paarweise gegenüber. Jedes Kind nennt drei Eigenschaften oder Fähigkeiten des Gegenübers, die es besonders schätzt. Anschließend werden die Paare gewechselt.",
+    reflexion: "Was macht uns als Team stark?" },
+  { id: "T5", nr: 5, cat: "team", catLabel: "Übungen für Teambesprechungen", title: "Was machen wir, wenn wir verärgert sind?", dauer: 20,
+    ziel: "Eigene Wege finden, um Ärger und Wut abzubauen.",
+    ablauf: "Im Halbkreis. Wut-Ventile besprechen: Rennen, Trampeln, auf einen Boxsack schlagen, eine alte Zeitung zerreißen, Hände kalt abwaschen, langsam zählen, mit dem Rücken gegen eine Wand drücken.",
+    reflexion: "Was hilft mir am besten? Wie fühle ich mich, nachdem ich mich abreagiert habe?" },
+  { id: "T6", nr: 6, cat: "team", catLabel: "Übungen für Teambesprechungen", title: "Was machen wir, wenn wir uns streiten?", dauer: 20,
+    ziel: "Erkennen, dass Konflikte lösbar sind und Wege der friedlichen Klärung lernen.",
+    ablauf: "Im Halbkreis. Konfliktlösung: Höre dem anderen Kind zu, kritisiere die Handlung, nicht die Person, sage was dich ärgert. Eine Lösung sollte ungefährlich, einfühlsam, gerecht und praktikabel sein.",
+    reflexion: "Was hilft dir künftig, Konflikte zu lösen? Wann ist eine Lösung für dich nicht akzeptabel?" },
+  { id: "T7", nr: 7, cat: "team", catLabel: "Übungen für Teambesprechungen", title: "Einfühlungsvermögen", dauer: 20,
+    ziel: "Verstehen, dass alle Gefühle normal sind und lernen, damit umzugehen.",
+    ablauf: "Im Halbkreis. Über gute und unangenehme Gefühle sprechen. Jedes Gefühl ist richtig. Es gibt keine schlechten Gefühle, nur angenehme und unangenehme.",
+    reflexion: "Welche Gefühle bewegen dich, und was hilft dir damit umzugehen? Wie beeinflusst dein Wohlbefinden das Team?" },
+  { id: "T8", nr: 8, cat: "team", catLabel: "Übungen für Teambesprechungen", title: "Was geschieht, wenn ich unfair war?", dauer: 20,
+    ziel: "Erkennen, dass Fehlverhalten Konsequenzen hat, und eigenverantwortlich Lösungen entwickeln.",
+    ablauf: "Im Halbkreis. Lösungsmöglichkeiten für Konsequenzen nach unfairem Verhalten erarbeiten. Mögliche Impulse: Bleib ruhig, überlege dir was du falsch gemacht hast, wie kannst du es wieder in Ordnung bringen.",
+    reflexion: "Wie ist es für dich, eigene Regeln festzulegen? Kannst du die vereinbarten Konsequenzen akzeptieren?" },
+];
 
 // ======= STATE =======
 const STORAGE_KEY = "coolandfair-builder-v4";
@@ -1196,10 +1361,9 @@ function renderLibrary() {
     card.innerHTML = `
       <div class="drag-handle"><span></span><span></span><span></span></div>
       <div class="color-bar cat-${ex.cat}"></div>
-      <div class="exercise-id">${ex.id}</div>
       <div class="exercise-content">
         <div class="exercise-title">${ex.title}</div>
-        <div class="exercise-meta">${ex.dauer} Min · ${ex.catLabel}</div>
+        <div class="exercise-meta"><span class="meta-id cat-${ex.cat}">${ex.id}</span> · ${ex.dauer} Min · ${ex.catLabel}</div>
       </div>
       <button class="icon-btn info" aria-label="Details ansehen" data-info="${ex.id}">i</button>
       <button class="icon-btn add" aria-label="Zum Plan hinzufügen" data-add="${ex.id}">+</button>
@@ -1213,16 +1377,23 @@ function renderPlan() {
   const list = document.getElementById("plan-list");
   list.innerHTML = "";
 
+  // DIVIDER: EINSTIEG
+  const einstiegDivider = document.createElement("div");
+  einstiegDivider.className = "plan-section-divider";
+  einstiegDivider.innerHTML = `<span>Einstieg</span>`;
+  list.appendChild(einstiegDivider);
+
   // FIXED SLOT: EINSTIEG
   const einstiegEx = findEx(state.einstiegId);
   const einstiegSlot = document.createElement("div");
   einstiegSlot.className = "fixed-slot";
   einstiegSlot.innerHTML = `
+    <div class="slot-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-label="Fix"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
     <div class="position-badge fixed">1</div>
     <div class="color-bar cat-${einstiegEx.cat}"></div>
     <div class="exercise-content">
       <div class="exercise-title">${einstiegEx.title}</div>
-      <div class="exercise-meta">${lockSvgInline}${einstiegEx.id} · ${einstiegEx.dauer} Min · ${einstiegEx.catLabel}</div>
+      <div class="exercise-meta"><span class="meta-id cat-${einstiegEx.cat}">${einstiegEx.id}</span> · ${einstiegEx.dauer} Min · ${einstiegEx.catLabel}</div>
     </div>
     <div class="einstieg-switch-wrapper">
       <span class="einstieg-switch-label">Trainingstyp:</span>
@@ -1260,7 +1431,7 @@ function renderPlan() {
       <div class="color-bar cat-${ex.cat}"></div>
       <div class="exercise-content">
         <div class="exercise-title">${ex.title}</div>
-        <div class="exercise-meta">${ex.id} · ${ex.dauer} Min · ${ex.catLabel}</div>
+        <div class="exercise-meta"><span class="meta-id cat-${ex.cat}">${ex.id}</span> · ${ex.dauer} Min · ${ex.catLabel}</div>
       </div>
       <button class="icon-btn info" aria-label="Details ansehen" data-info="${ex.id}">i</button>
       <button class="icon-btn" aria-label="Aus Plan entfernen" data-remove="${ex.id}">×</button>
@@ -1292,11 +1463,12 @@ function renderPlan() {
   const abschlussSlot = document.createElement("div");
   abschlussSlot.className = "fixed-slot";
   abschlussSlot.innerHTML = `
+    <div class="slot-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-label="Fix"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
     <div class="position-badge fixed">${state.middleIds.length + 2}</div>
     <div class="color-bar cat-${abschlussEx.cat}"></div>
     <div class="exercise-content">
       <div class="exercise-title">${abschlussEx.title}</div>
-      <div class="exercise-meta">${lockSvgInline}${abschlussEx.id} · ${abschlussEx.dauer} Min · ${abschlussEx.catLabel}</div>
+      <div class="exercise-meta"><span class="meta-id cat-${abschlussEx.cat}">${abschlussEx.id}</span> · ${abschlussEx.dauer} Min · ${abschlussEx.catLabel}</div>
     </div>
     <button class="icon-btn info" aria-label="Details ansehen" data-info="${abschlussEx.id}">i</button>
   `;
@@ -1324,23 +1496,22 @@ function renderStats() {
 
   const structureCard = document.getElementById("stat-structure-card");
   const structureLabel = document.getElementById("stat-structure");
-  const structureSub = document.getElementById("stat-structure-sub");
+
+  document.getElementById("step-bewegung").classList.toggle("done", hasB);
+  document.getElementById("step-team").classList.toggle("done", hasT);
+  document.getElementById("step-complete").classList.toggle("done", hasB && hasT);
+  document.getElementById("step-line-1").classList.toggle("done", hasB);
+  document.getElementById("step-line-2").classList.toggle("done", hasB && hasT);
 
   structureCard.classList.remove("complete", "incomplete");
 
   if (middleExs.length === 0) {
-    structureLabel.textContent = "Beginne";
-    structureSub.textContent = "Bewegung + Teambesprechung fehlen";
+    structureLabel.textContent = "Leg los!";
   } else if (hasB && hasT) {
     structureLabel.textContent = "Vollständig";
-    structureSub.textContent = "Aufbau passt";
     structureCard.classList.add("complete");
   } else {
-    const missing = [];
-    if (!hasB) missing.push("Bewegung");
-    if (!hasT) missing.push("Teambesprechung");
     structureLabel.textContent = "Im Aufbau";
-    structureSub.textContent = `Es fehlt: ${missing.join(", ")}`;
     structureCard.classList.add("incomplete");
   }
 }
@@ -1354,9 +1525,7 @@ function initSortable() {
 
   const libList = document.getElementById("library-list");
   const middleList = document.getElementById("middle-list");
-  const isMobile = window.matchMedia("(max-width: 1200px)").matches;
-
-  if (!isMobile && libList) {
+  if (libList) {
     libSortable = Sortable.create(libList, {
       group: { name: "shared", pull: "clone", put: false },
       sort: false,
@@ -1364,28 +1533,34 @@ function initSortable() {
       ghostClass: "sortable-ghost",
       chosenClass: "sortable-chosen",
       dragClass: "sortable-drag",
+      touchStartThreshold: 5,
     });
   }
 
   if (middleList) {
     middleSortable = Sortable.create(middleList, {
-      group: !isMobile ? { name: "shared", pull: false, put: true } : null,
+      group: { name: "shared", pull: false, put: true },
       animation: 150,
       ghostClass: "sortable-ghost",
       chosenClass: "sortable-chosen",
       dragClass: "sortable-drag",
       filter: ".drop-zone",
+      touchStartThreshold: 5,
       onAdd: (evt) => {
         const id = evt.item.dataset.id;
         evt.item.remove();
         const insertIdx = Math.min(evt.newIndex, state.middleIds.length);
         state.middleIds.splice(insertIdx, 0, id);
-        updatePlan();
+        saveState();
+        renderPlan();
+        renderStats();
       },
       onUpdate: () => {
         const cards = Array.from(middleList.querySelectorAll(".exercise-card"));
         state.middleIds = cards.map(c => c.dataset.id);
-        updatePlan();
+        saveState();
+        renderPlan();
+        renderStats();
       },
     });
   }
@@ -1403,13 +1578,13 @@ function openInfoPanel(id) {
   document.getElementById("info-dauer").textContent = ex.dauer + " Minuten";
   document.getElementById("info-title").textContent = ex.title;
   document.getElementById("info-ziel").textContent = ex.ziel;
-  document.getElementById("info-ablauf").innerHTML = ex.ablauf;
+  document.getElementById("info-ablauf").textContent = ex.ablauf;
   document.getElementById("info-reflexion").textContent = ex.reflexion;
 
   const variationBlock = document.getElementById("info-variation-block");
   if (ex.variation) {
     variationBlock.style.display = "";
-    document.getElementById("info-variation").innerHTML = ex.variation;
+    document.getElementById("info-variation").textContent = ex.variation;
   } else {
     variationBlock.style.display = "none";
   }
@@ -1470,7 +1645,9 @@ document.addEventListener("click", (e) => {
   if (addId) {
     if (!state.middleIds.includes(addId)) {
       state.middleIds.push(addId);
-      updatePlan();
+      saveState();
+      renderPlan();
+      renderStats();
     }
     return;
   }
@@ -1479,7 +1656,9 @@ document.addEventListener("click", (e) => {
   const removeId = e.target.closest("[data-remove]")?.dataset.remove;
   if (removeId) {
     state.middleIds = state.middleIds.filter(id => id !== removeId);
-    updatePlan();
+    saveState();
+    renderPlan();
+    renderStats();
     return;
   }
 
@@ -1494,7 +1673,9 @@ document.addEventListener("click", (e) => {
   const einstiegChoice = e.target.closest("[data-einstieg]")?.dataset.einstieg;
   if (einstiegChoice && einstiegChoice !== state.einstiegId) {
     state.einstiegId = einstiegChoice;
-    updatePlan();
+    saveState();
+    renderPlan();
+    renderStats();
     return;
   }
 
@@ -1529,7 +1710,9 @@ document.addEventListener("click", (e) => {
     const id = e.target.dataset.id;
     if (id && !state.middleIds.includes(id)) {
       state.middleIds.push(id);
-      updatePlan();
+      saveState();
+      renderPlan();
+      renderStats();
       closeInfoPanel();
     }
   }
@@ -1564,7 +1747,9 @@ document.getElementById("reset-btn").addEventListener("click", () => {
     state.einstiegId = "E2";
     state.planName = "Mein Cool-and-Fair-Training";
     document.getElementById("plan-name").value = state.planName;
-    updatePlan();
+    saveState();
+    renderPlan();
+    renderStats();
   }
 });
 
@@ -1679,43 +1864,16 @@ function buildPrintView() {
 window.addEventListener("beforeprint", buildPrintView);
 
 // ======= INIT =======
-async function init() {
-  // Ladescreen anzeigen
-  document.getElementById('library-list').innerHTML = `
-    <div style="padding:2rem 1.5rem;display:flex;flex-direction:column;gap:0.75rem;">
-      ${[1,2,3,4,5].map(() => `
-        <div style="height:72px;background:var(--gray-100);border-radius:12px;animation:shimmer 1.2s infinite linear;background-size:200% 100%;background-image:linear-gradient(90deg,var(--gray-100) 0%,var(--gray-50) 50%,var(--gray-100) 100%);"></div>
-      `).join('')}
-    </div>
-    <style>@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}</style>
-  `;
-
-  // CMS laden
-  await loadExercisesFromCMS();
-
-  // State initialisieren
-  loadState();
-  document.getElementById("plan-name").value = state.planName;
-
-  const activeChip = document.querySelector(`[data-filter="${state.filter}"]`);
-  if (activeChip) {
-    document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
-    activeChip.classList.add("active");
-  }
-
-  renderLibrary();
-  renderPlan();
-  renderStats();
-  document.dispatchEvent(new Event('exercises-loaded'));
+loadState();
+document.getElementById("plan-name").value = state.planName;
+const activeChip = document.querySelector(`[data-filter="${state.filter}"]`);
+if (activeChip) {
+  document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+  activeChip.classList.add("active");
 }
-
-function updatePlan() {
-  saveState();
-  renderPlan();
-  renderStats();
-}
-
-init();
+renderLibrary();
+renderPlan();
+renderStats();
 </script>
 </body>
 </html>
