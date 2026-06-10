@@ -54,6 +54,7 @@
     font-size: 16px;
     line-height: 1.5;
     height: auto;
+    overflow: hidden;
   }
 
   .app { padding-bottom: 4rem; }
@@ -1889,6 +1890,11 @@ function sendHeight() {
 const _resizeObserver = new ResizeObserver(() => sendHeight());
 _resizeObserver.observe(document.querySelector('.app'));
 window.addEventListener('load', sendHeight);
+
+// Scroll-Events an Elternseite weiterleiten (verhindert "Zieren" beim ersten Scrollen)
+window.addEventListener('wheel', function(e) {
+  window.parent.postMessage({ type: 'wheel', deltaX: e.deltaX, deltaY: e.deltaY }, '*');
+}, { passive: true });
 </script>
 </body>
 </html>
