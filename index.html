@@ -1091,17 +1091,10 @@
     --dark-label:     #6B9990;
   }
 
-  .plan-section {
-    background: var(--dark-bg);
-    border-color: transparent;
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-  }
-  /* Inneres Column-Div: kein eigener Rahmen, nahtlos */
+  /* Inneres Column-Div (Plan-Box): dunkel */
   .column.plan-section {
-    border-radius: 0;
-    border-color: transparent;
     background: var(--dark-bg);
+    border-color: transparent;
   }
 
   /* Plan Header */
@@ -1117,8 +1110,7 @@
   .plan-section .plan-name-edit:hover { background: rgba(255,255,255,0.15); color: var(--dark-text); }
 
   /* Stats-Bereich */
-  .plan-section .plan-stats { padding: 1rem 1.5rem 0.25rem; }
-  .plan-section .dfb-hint { margin: 0; border-radius: 0; }
+  .plan-section .dfb-hint { background: transparent; border-top: none; }
   .plan-section .stat-card {
     background: var(--dark-surface);
     border-color: var(--dark-border);
