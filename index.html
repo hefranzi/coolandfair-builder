@@ -1110,14 +1110,14 @@
   .plan-section .plan-name-edit:hover { background: rgba(255,255,255,0.15); color: var(--dark-text); }
 
   /* Stats-Bereich */
-  .plan-section .dfb-hint { background: transparent; border-top: none; }
   .plan-section .stat-card {
     background: var(--dark-surface);
     border-color: var(--dark-border);
   }
   .plan-section .stat-label { color: var(--dark-label); }
-  .plan-section .stat-value { color: var(--green-400); }
+  .plan-section .stat-value { color: white; }
   .plan-section .stat-sub { color: var(--dark-muted); }
+  /* Struktur-Karte: Zustands-Farben */
   .plan-section .stat-card.complete {
     background: rgba(79,168,137,0.12);
     border-color: rgba(79,168,137,0.35);
@@ -1165,30 +1165,31 @@
     color: var(--dark-muted);
   }
 
-  /* Icon Buttons im Plan */
+  /* Icon Buttons im Plan: Standard weiß, Hover grün */
   .plan-section .icon-btn {
     background: rgba(255,255,255,0.07);
-    color: var(--dark-muted);
-    border-color: var(--dark-border);
-  }
-  .plan-section .icon-btn:hover {
-    background: rgba(255,255,255,0.14);
-    color: var(--dark-text);
+    color: white;
     border-color: var(--dark-border2);
   }
+  .plan-section .icon-btn:hover {
+    background: rgba(79,168,137,0.15);
+    color: var(--green-400);
+    border-color: rgba(79,168,137,0.4);
+  }
 
-  /* Einstieg Switch */
+  /* Einstieg Switch: Standard weiß, Hover grün */
   .plan-section .einstieg-switch-label { color: var(--dark-muted); }
   .plan-section .einstieg-switch {
     background: var(--dark-bg);
     border-color: var(--dark-border2);
   }
-  .plan-section .einstieg-switch button { color: var(--dark-muted); }
-  .plan-section .einstieg-switch button:hover { color: var(--dark-text); }
-  .plan-section .einstieg-switch button.active { background: var(--green-400); color: #0A1F1C; }
+  .plan-section .einstieg-switch button { color: white; }
+  .plan-section .einstieg-switch button:hover { color: var(--green-400); }
+  .plan-section .einstieg-switch button.active { background: var(--green-400); color: #0A1F1C; font-weight: 700; }
 
-  /* Slot Lock Icon */
-  .plan-section .slot-lock { color: var(--dark-border2); }
+  /* Slot Lock + Drag Handle: ein Tick heller */
+  .plan-section .slot-lock { color: rgba(255,255,255,0.3); }
+  .plan-section .drag-handle span { background: rgba(255,255,255,0.3); }
 
   /* Drop Zone */
   .plan-section .drop-zone {
@@ -1203,12 +1204,14 @@
 
   /* DFB Hint */
   .plan-section .dfb-hint {
-    background: rgba(79,168,137,0.08);
-    border-top: 1px solid var(--dark-border);
+    background: rgba(79,168,137,0.07);
+    border-top: 1px solid var(--dark-border2);
+    margin-top: 0.5rem;
   }
   .plan-section .dfb-hint-label { color: var(--green-400); }
-  .plan-section .dfb-hint-text { color: var(--dark-muted); }
-  .plan-section .dfb-hint-text a { color: var(--green-400); }
+  .plan-section .dfb-hint-text { color: var(--dark-text); }
+  .plan-section .dfb-hint-text a { color: var(--green-400); text-decoration: none; border-bottom: 1px solid rgba(79,168,137,0.4); transition: border-color 0.15s ease, color 0.15s ease; }
+  .plan-section .dfb-hint-text a:hover { color: white; border-bottom-color: white; }
 </style>
 </head>
 <body>
