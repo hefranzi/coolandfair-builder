@@ -53,9 +53,10 @@
     color: var(--gray-900);
     font-size: 16px;
     line-height: 1.5;
+    height: auto;
   }
 
-  .app { min-height: 100vh; padding-bottom: 4rem; }
+  .app { padding-bottom: 4rem; }
 
   .content-wrapper {
     max-width: var(--content-max);
@@ -1876,16 +1877,17 @@ renderPlan();
 renderStats();
 
 // ======= IFRAME AUTO-HEIGHT =======
-// Sendet die aktuelle Seitenhöhe per postMessage an die Elternseite (Webflow),
-// damit der iframe sich dynamisch anpasst – kein Scrollbalken nötig.
+let _lastSentHeight = 0;
 function sendHeight() {
-  const height = document.documentElement.scrollHeight;
-  window.parent.postMessage({ type: 'iframeHeight', height: height }, '*');
+  const app = document.querySelector('.app');
+  if (!app) return;
+  const height = app.offsetHeight + 32; // 32px Puffer
+  if (Math.abs(height - _lastSentHeight) < 2) return; // Keine Mini-Schwankungen senden
+  _lastSentHeight = height;
+  window.parent.postMessage({ type: 'iframeHeight', height }, '*');
 }
-// Bei Größenänderung des Body (z.B. Info-Panel öffnen, Übung hinzufügen)
 const _resizeObserver = new ResizeObserver(() => sendHeight());
-_resizeObserver.observe(document.body);
-// Einmalig beim Laden
+_resizeObserver.observe(document.querySelector('.app'));
 window.addEventListener('load', sendHeight);
 </script>
 </body>
