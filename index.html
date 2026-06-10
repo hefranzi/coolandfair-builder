@@ -55,7 +55,11 @@
     line-height: 1.5;
     height: auto;
     overflow: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar { display: none; width: 0; }
 
   .app { padding-bottom: 4rem; }
 
