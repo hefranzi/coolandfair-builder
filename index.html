@@ -365,24 +365,24 @@
 
   /* Übung bereits im Plan */
   .exercise-card.is-in-plan {
-    opacity: 0.5;
+    opacity: 0.55;
     background: var(--green-25);
-    position: relative;
   }
-  .exercise-card.is-in-plan::after {
-    content: "✓ Im Plan";
-    position: absolute;
-    top: 0.4rem;
-    right: 0.4rem;
-    background: var(--green-400);
-    color: white;
+  .exercise-card.is-in-plan .icon-btn { display: none; }
+  .in-plan-badge {
+    display: none;
+    flex-shrink: 0;
+    align-items: center;
+    background: var(--green-100);
+    color: var(--green-700);
     font-size: 0.6rem;
     font-weight: 700;
-    padding: 0.15rem 0.5rem;
+    padding: 0.2rem 0.55rem;
     border-radius: 999px;
     letter-spacing: 0.04em;
-    pointer-events: none;
+    white-space: nowrap;
   }
+  .exercise-card.is-in-plan .in-plan-badge { display: flex; }
 
   .drag-handle {
     color: var(--gray-400);
@@ -818,6 +818,7 @@
     display: flex;
     flex-direction: column;
     box-shadow: 0 24px 64px rgba(0,0,0,0.18), 0 4px 16px rgba(0,0,0,0.08);
+    overflow: hidden;
   }
   .info-panel.is-open {
     transform: translate(-50%, -50%);
@@ -828,45 +829,25 @@
   }
 
   .info-panel-header {
-    padding: 1.5rem 2rem;
+    padding: 1.25rem 1.5rem;
     border-bottom: 1px solid var(--gray-100);
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     gap: 1rem;
     flex-shrink: 0;
   }
   .info-panel-header-content {
     display: flex;
-    align-items: center;
-    gap: 1rem;
+    flex-direction: column;
+    gap: 0.2rem;
     flex: 1;
     min-width: 0;
   }
-  .info-panel-id {
-    font-family: var(--font-display);
-    font-size: 2rem;
-    font-weight: 900;
-    color: var(--green-700);
-    line-height: 1;
-    flex-shrink: 0;
-  }
-  .info-panel-meta {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-  }
-  .info-panel-meta-label {
-    font-size: 0.625rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
+  .info-panel-meta-line {
+    font-size: 0.75rem;
     color: var(--gray-600);
-    text-transform: uppercase;
-  }
-  .info-panel-meta-value {
-    font-size: 0.875rem;
-    color: var(--gray-900);
-    font-weight: 600;
+    line-height: 1.4;
   }
 
   .info-panel-close {
@@ -897,11 +878,11 @@
 
   .info-panel-title {
     font-family: var(--font-display);
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     font-weight: 900;
     color: var(--gray-900);
-    line-height: 1.1;
-    margin-bottom: 1.5rem;
+    line-height: 1.2;
+    margin-bottom: 0;
   }
 
   .info-block { margin-bottom: 1.5rem; }
@@ -1212,16 +1193,12 @@
   <aside class="info-panel" id="info-panel" aria-hidden="true">
     <div class="info-panel-header">
       <div class="info-panel-header-content">
-        <div class="info-panel-id" id="info-id">B2</div>
-        <div class="info-panel-meta">
-          <div class="info-panel-meta-label" id="info-cat">Bewegung</div>
-          <div class="info-panel-meta-value" id="info-dauer">15 Min</div>
-        </div>
+        <h2 class="info-panel-title" id="info-title">Brückenwächter:in</h2>
+        <div class="info-panel-meta-line"><span class="meta-id" id="info-id">B2</span> · <span id="info-dauer">15 Min</span> · <span id="info-cat">Bewegung</span></div>
       </div>
       <button class="info-panel-close" id="info-close" aria-label="Schließen">×</button>
     </div>
     <div class="info-panel-body">
-      <h2 class="info-panel-title" id="info-title">Brückenwächter:in</h2>
       <div class="info-block">
         <div class="info-block-label">Ziel</div>
         <div class="info-block-content" id="info-ziel"></div>
@@ -1409,6 +1386,7 @@ function renderLibrary() {
       </div>
       <button class="icon-btn info" aria-label="Details ansehen" data-info="${ex.id}">i</button>
       <button class="icon-btn add" aria-label="Zum Plan hinzufügen" data-add="${ex.id}">+</button>
+      <span class="in-plan-badge">✓ Im Plan</span>
     `;
     list.appendChild(card);
   });
@@ -1626,9 +1604,11 @@ function openInfoPanel(id) {
   const ex = findEx(id);
   if (!ex) return;
 
-  document.getElementById("info-id").textContent = ex.id;
+  const infoIdEl = document.getElementById("info-id");
+  infoIdEl.textContent = ex.id;
+  infoIdEl.className = `meta-id cat-${ex.cat}`;
   document.getElementById("info-cat").textContent = ex.catLabel;
-  document.getElementById("info-dauer").textContent = ex.dauer + " Minuten";
+  document.getElementById("info-dauer").textContent = ex.dauer + " Min";
   document.getElementById("info-title").textContent = ex.title;
   document.getElementById("info-ziel").textContent = ex.ziel;
   document.getElementById("info-ablauf").textContent = ex.ablauf;
@@ -1664,9 +1644,10 @@ function openInfoPanel(id) {
     addBtn.dataset.id = ex.id;
   }
 
-  // Modal mittig im aktuellen Viewport positionieren (iframe: fixed funktioniert nicht)
+  // Modal mittig im aktuellen Viewport positionieren
+  // _parentScrollInIframe = wie weit die Seite in den iframe gescrollt hat
   const panel = document.getElementById("info-panel");
-  panel.style.top = (window.scrollY + window.innerHeight / 2) + "px";
+  panel.style.top = (_parentScrollInIframe + _parentViewportHeight / 2) + "px";
   panel.classList.add("is-open");
   panel.setAttribute("aria-hidden", "false");
   document.getElementById("info-backdrop").classList.add("is-open");
@@ -1954,6 +1935,17 @@ window.addEventListener('load', sendHeight);
 window.addEventListener('wheel', function(e) {
   window.parent.postMessage({ type: 'wheel', deltaX: e.deltaX, deltaY: e.deltaY }, '*');
 }, { passive: true });
+
+// Scroll-Position vom Elternfenster empfangen (für Modal-Positionierung)
+let _parentScrollInIframe = 0;
+let _parentViewportHeight = 600;
+window.addEventListener('message', function(e) {
+  if (!e.data) return;
+  if (e.data.type === 'parentScroll') {
+    _parentScrollInIframe = e.data.scrollIntoIframe || 0;
+    _parentViewportHeight = e.data.viewportHeight || window.innerHeight;
+  }
+});
 </script>
 </body>
 </html>
