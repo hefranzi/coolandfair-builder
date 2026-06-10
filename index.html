@@ -61,7 +61,7 @@
   html::-webkit-scrollbar,
   body::-webkit-scrollbar { display: none; width: 0; }
 
-  .app { padding-bottom: 4rem; }
+  .app { padding-bottom: 4rem; position: relative; }
 
   .content-wrapper {
     max-width: var(--content-max);
@@ -361,6 +361,27 @@
   .exercise-card.sortable-drag {
     box-shadow: 0 8px 24px rgba(0,0,0,0.15);
     cursor: grabbing;
+  }
+
+  /* Übung bereits im Plan */
+  .exercise-card.is-in-plan {
+    opacity: 0.5;
+    background: var(--green-25);
+    position: relative;
+  }
+  .exercise-card.is-in-plan::after {
+    content: "✓ Im Plan";
+    position: absolute;
+    top: 0.4rem;
+    right: 0.4rem;
+    background: var(--green-400);
+    color: white;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    letter-spacing: 0.04em;
+    pointer-events: none;
   }
 
   .drag-handle {
@@ -780,8 +801,8 @@
   }
 
   .info-panel {
-    position: fixed;
-    top: 50%;
+    position: absolute;
+    top: 50%; /* wird per JS überschrieben */
     left: 50%;
     transform: translate(-50%, -46%);
     width: calc(100% - 2rem);
@@ -1375,8 +1396,9 @@ function renderLibrary() {
   }
 
   filtered.forEach(ex => {
+    const inPlan = state.middleIds.includes(ex.id);
     const card = document.createElement("div");
-    card.className = "exercise-card";
+    card.className = "exercise-card" + (inPlan ? " is-in-plan" : "");
     card.dataset.id = ex.id;
     card.innerHTML = `
       <div class="drag-handle"><span></span><span></span><span></span></div>
@@ -1584,6 +1606,7 @@ function initSortable() {
         saveState();
         renderPlan();
         renderStats();
+        renderLibrary();
       },
       onUpdate: () => {
         const cards = Array.from(middleList.querySelectorAll(".exercise-card"));
@@ -1641,14 +1664,18 @@ function openInfoPanel(id) {
     addBtn.dataset.id = ex.id;
   }
 
-  document.getElementById("info-panel").classList.add("is-open");
-  document.getElementById("info-panel").setAttribute("aria-hidden", "false");
+  // Modal mittig im aktuellen Viewport positionieren (iframe: fixed funktioniert nicht)
+  const panel = document.getElementById("info-panel");
+  panel.style.top = (window.scrollY + window.innerHeight / 2) + "px";
+  panel.classList.add("is-open");
+  panel.setAttribute("aria-hidden", "false");
   document.getElementById("info-backdrop").classList.add("is-open");
 }
 
 function closeInfoPanel() {
-  document.getElementById("info-panel").classList.remove("is-open");
-  document.getElementById("info-panel").setAttribute("aria-hidden", "true");
+  const panel = document.getElementById("info-panel");
+  panel.classList.remove("is-open");
+  panel.setAttribute("aria-hidden", "true");
   document.getElementById("info-backdrop").classList.remove("is-open");
 }
 
@@ -1678,6 +1705,7 @@ document.addEventListener("click", (e) => {
       saveState();
       renderPlan();
       renderStats();
+      renderLibrary();
     }
     return;
   }
@@ -1689,6 +1717,7 @@ document.addEventListener("click", (e) => {
     saveState();
     renderPlan();
     renderStats();
+    renderLibrary();
     return;
   }
 
@@ -1743,6 +1772,7 @@ document.addEventListener("click", (e) => {
       saveState();
       renderPlan();
       renderStats();
+      renderLibrary();
       closeInfoPanel();
     }
   }
@@ -1780,6 +1810,7 @@ document.getElementById("reset-btn").addEventListener("click", () => {
     saveState();
     renderPlan();
     renderStats();
+    renderLibrary();
   }
 });
 
