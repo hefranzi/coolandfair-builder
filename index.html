@@ -1639,10 +1639,13 @@ function initSortable() {
       touchStartThreshold: 5,
       onAdd: (evt) => {
         const id = evt.item.dataset.id;
-        evt.item.remove();
-        const insertIdx = Math.min(evt.newIndex, state.middleIds.length);
-        state.middleIds.splice(insertIdx, 0, id);
-        saveState();
+        // Remove clone immediately before re-render to avoid stale DOM nodes
+        if (evt.item.parentNode) evt.item.parentNode.removeChild(evt.item);
+        if (id && !state.middleIds.includes(id)) {
+          const insertIdx = Math.min(evt.newIndex, state.middleIds.length);
+          state.middleIds.splice(insertIdx, 0, id);
+          saveState();
+        }
         renderPlan();
         renderStats();
         renderLibrary();
