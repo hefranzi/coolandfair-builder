@@ -591,6 +591,15 @@
   .step-item.done .step-label {
     color: var(--green-700);
   }
+  .step-dot-check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray-300);
+  }
+  .step-item.done .step-dot-check {
+    color: white;
+  }
   .step-line {
     flex: 1;
     height: 2px;
@@ -1088,12 +1097,12 @@
     box-shadow: 0 4px 24px rgba(15, 79, 63, 0.10), 0 1px 4px rgba(0,0,0,0.06);
   }
 
-  /* Plan-Header: echtes Brush-SVG, rechtsbündig mit Anschnitt */
+  /* Plan-Header: echtes Brush-SVG, im Anschnitt rechts (~2/3 sichtbar) */
   .plan-header {
     background-image: url('brush.svg');
-    background-size: 52% auto;
+    background-size: 75% auto;
     background-repeat: no-repeat;
-    background-position: right center;
+    background-position: calc(100% + 25%) center;
   }
 
   /* Stat Cards: neutrales Grau (kein Grün) */
@@ -1125,10 +1134,14 @@
   .plan-stats .stat-card.complete .stat-sub   { color: rgba(255,255,255,0.45); }
   .plan-stats .stat-card.complete .step-dot   { background: transparent; border-color: rgba(255,255,255,0.25); }
   .plan-stats .stat-card.complete .step-item.done .step-dot { background: var(--green-400); border-color: var(--green-400); }
-  .plan-stats .stat-card.complete .step-label { color: rgba(255,255,255,0.45); }
-  .plan-stats .stat-card.complete .step-item.done .step-label { color: var(--green-400); }
+  .plan-stats .stat-card.complete .step-label { color: white; }
+  .plan-stats .stat-card.complete .step-item.done .step-label { color: white; }
   .plan-stats .stat-card.complete .step-line  { background: rgba(255,255,255,0.15); }
   .plan-stats .stat-card.complete .step-line.done { background: var(--green-400); }
+  /* Brush im Complete-State weiter rechts = mehr Anschnitt */
+  .plan-stats .stat-card.complete {
+    background-position: calc(100% + 25%) center;
+  }
 
   /* Exercise Cards im Plan: leicht abgehoben */
   .plan-section .exercise-card,
@@ -1221,12 +1234,14 @@
               <div class="step-line" id="step-line-1"></div>
               <div class="step-item" id="step-team">
                 <div class="step-dot"></div>
-                <div class="step-label">Teambesprechung</div>
+                <div class="step-label">Team</div>
               </div>
               <div class="step-line" id="step-line-2"></div>
               <div class="step-item" id="step-complete">
-                <div class="step-dot"></div>
-                <div class="step-label">Vollständig</div>
+                <div class="step-dot step-dot-check">
+                  <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" width="8" height="8"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div class="step-label">Check</div>
               </div>
             </div>
           </div>
