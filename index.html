@@ -49,7 +49,7 @@
 
   html, body {
     font-family: var(--font-body);
-    background: transparent;
+    background: #ECEEF0;
     color: var(--gray-900);
     font-size: 16px;
     line-height: 1.5;
@@ -61,7 +61,7 @@
   html::-webkit-scrollbar,
   body::-webkit-scrollbar { display: none; width: 0; }
 
-  .app { padding-bottom: 4rem; position: relative; }
+  .app { padding-bottom: 4rem; position: relative; background: #ECEEF0; }
 
   .content-wrapper {
     max-width: var(--content-max);
@@ -1078,140 +1078,65 @@
   }
 
   /* ============================================
-     PLAN-SECTION: DARK MODE (Slate-Grün)
+     PLAN-SECTION: VISUELLE ABHEBUNG (Light)
      ============================================ */
+
+  /* Pinselstrich-Pattern als SVG data-URI */
   :root {
-    --dark-bg:        #1A2B28;
-    --dark-surface:   #243530;
-    --dark-surface2:  #2C403A;
-    --dark-border:    rgba(255,255,255,0.08);
-    --dark-border2:   rgba(255,255,255,0.14);
-    --dark-text:      #E8F0EE;
-    --dark-muted:     #8FADA7;
-    --dark-label:     #6B9990;
+    --brush-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='120' viewBox='0 0 600 120'%3E%3Cpath d='M-30 38 C40 8, 100 62, 180 32 C250 4, 320 72, 400 38 C460 12, 520 55, 640 28' stroke='rgba(255,255,255,0.06)' stroke-width='52' fill='none' stroke-linecap='round'/%3E%3Cpath d='M-20 82 C60 100, 130 52, 210 88 C290 122, 360 58, 440 80 C500 94, 560 68, 640 74' stroke='rgba(255,255,255,0.04)' stroke-width='38' fill='none' stroke-linecap='round'/%3E%3Cpath d='M80 18 C140 38, 200 10, 280 28 C350 44, 410 8, 490 22 C540 30, 580 14, 620 20' stroke='rgba(255,255,255,0.03)' stroke-width='22' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
   }
 
-  /* Inneres Column-Div (Plan-Box): dunkel */
+  /* Plan-Spalte: weißer Hintergrund, stärkerer Schatten als Bib */
   .column.plan-section {
-    background: var(--dark-bg);
-    border-color: transparent;
+    background: white;
+    border-color: var(--gray-200);
+    box-shadow: 0 4px 24px rgba(15, 79, 63, 0.10), 0 1px 4px rgba(0,0,0,0.06);
   }
 
-  /* Plan Header */
-  .plan-section .plan-header {
-    background: var(--dark-surface);
-    border-bottom: 1px solid var(--dark-border);
+  /* Plan-Header: Pinselstrich-Pattern */
+  .plan-header {
+    background-image: var(--brush-pattern);
+    background-size: 600px 120px;
+    background-repeat: no-repeat;
+    background-position: right center;
   }
-  .plan-section .plan-header h2 { color: var(--dark-label); }
-  .plan-section .plan-name-input { color: var(--dark-text); border-bottom-color: var(--dark-border2); }
-  .plan-section .plan-name-input:hover,
-  .plan-section .plan-name-input:focus { border-bottom-color: var(--dark-text); }
-  .plan-section .plan-name-edit { background: rgba(255,255,255,0.08); color: var(--dark-muted); }
-  .plan-section .plan-name-edit:hover { background: rgba(255,255,255,0.15); color: var(--dark-text); }
 
-  /* Stats-Bereich */
-  .plan-section .stat-card {
-    background: var(--dark-surface);
-    border-color: var(--dark-border);
+  /* Stat Cards im Plan: leicht grüntönig, etwas mehr Schatten */
+  .plan-stats .stat-card {
+    background: #F5F8F6;
+    border-color: var(--green-100);
+    box-shadow: 0 1px 3px rgba(15, 79, 63, 0.06);
   }
-  .plan-section .stat-label { color: var(--dark-label); }
-  .plan-section .stat-value { color: white; }
-  .plan-section .stat-sub { color: var(--dark-muted); }
-  /* Struktur-Karte: Zustands-Farben */
-  .plan-section .stat-card.complete {
-    background: rgba(79,168,137,0.12);
-    border-color: rgba(79,168,137,0.35);
+  .plan-stats .stat-card.complete {
+    background: var(--green-25);
+    border-color: var(--green-400);
+    background-image: var(--brush-pattern);
+    background-size: 400px 80px;
+    background-repeat: no-repeat;
+    background-position: right center;
   }
-  .plan-section .stat-card.complete .stat-value { color: var(--green-400); }
-  .plan-section .stat-card.incomplete {
-    background: rgba(199,119,0,0.12);
-    border-color: rgba(199,119,0,0.3);
+  .plan-stats .stat-card.incomplete {
+    background: var(--warning-bg);
+    border-color: var(--warning-border);
   }
-  .plan-section .stat-card.incomplete .stat-value { color: #F0A830; }
 
-  /* Stepper */
-  .plan-section .step-dot { background: var(--dark-bg); border-color: var(--dark-border2); }
-  .plan-section .step-label { color: var(--dark-label); }
-  .plan-section .step-line { background: var(--dark-border2); }
-  .plan-section .step-item.done .step-dot { background: var(--green-400); border-color: var(--green-400); }
-  .plan-section .step-item.done .step-label { color: var(--green-400); }
-  .plan-section .step-line.done { background: var(--green-400); }
-
-  /* Plan List */
-  .plan-section .plan-list { background: transparent; }
-  .plan-section .plan-section-divider { color: var(--dark-label); }
-  .plan-section .plan-section-divider::before,
-  .plan-section .plan-section-divider::after { background: var(--dark-border); }
-
-  /* Exercise Cards im Plan */
+  /* Exercise Cards im Plan: leicht abgehoben */
   .plan-section .exercise-card,
   .plan-section .fixed-slot {
-    background: var(--dark-surface);
-    border-color: var(--dark-border);
+    background: #F9FAFA;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   }
-  .plan-section .exercise-card:hover { background: var(--dark-surface2); border-color: var(--dark-border2); }
-  .plan-section .exercise-title { color: var(--dark-text); }
-  .plan-section .exercise-meta { color: var(--dark-muted); }
-  .plan-section .drag-handle span { background: var(--dark-border2); }
-  .plan-section .drag-handle { color: var(--dark-border2); }
-
-  /* Position Badge im Plan */
-  .plan-section .position-badge {
-    background: rgba(255,255,255,0.12);
-    color: var(--dark-text);
-  }
-  .plan-section .position-badge.fixed {
-    background: rgba(255,255,255,0.07);
-    color: var(--dark-muted);
-  }
-
-  /* Icon Buttons im Plan: Standard weiß, Hover grün */
-  .plan-section .icon-btn {
-    background: rgba(255,255,255,0.07);
-    color: white;
-    border-color: var(--dark-border2);
-  }
-  .plan-section .icon-btn:hover {
-    background: rgba(79,168,137,0.15);
-    color: var(--green-400);
-    border-color: rgba(79,168,137,0.4);
-  }
-
-  /* Einstieg Switch: Standard weiß, Hover grün */
-  .plan-section .einstieg-switch-label { color: var(--dark-muted); }
-  .plan-section .einstieg-switch {
-    background: var(--dark-bg);
-    border-color: var(--dark-border2);
-  }
-  .plan-section .einstieg-switch button { color: white; }
-  .plan-section .einstieg-switch button:hover { color: var(--green-400); }
-  .plan-section .einstieg-switch button.active { background: var(--green-400); color: #0A1F1C; font-weight: 700; }
-
-  /* Slot Lock + Drag Handle: ein Tick heller */
-  .plan-section .slot-lock { color: rgba(255,255,255,0.3); }
-  .plan-section .drag-handle span { background: rgba(255,255,255,0.3); }
-
-  /* Drop Zone */
-  .plan-section .drop-zone {
-    border-color: var(--dark-border2);
-    color: var(--dark-muted);
-  }
-  .plan-section .drop-zone.is-active {
-    border-color: var(--green-400);
-    background: rgba(79,168,137,0.08);
-    color: var(--green-400);
+  .plan-section .exercise-card:hover {
+    background: white;
+    box-shadow: 0 2px 8px rgba(15, 79, 63, 0.09);
   }
 
   /* DFB Hint */
   .plan-section .dfb-hint {
-    background: rgba(79,168,137,0.07);
-    border-top: 1px solid var(--dark-border2);
+    background: var(--green-25);
+    border-top: 1px solid var(--green-100);
     margin-top: 0.5rem;
   }
-  .plan-section .dfb-hint-label { color: var(--green-400); }
-  .plan-section .dfb-hint-text { color: var(--dark-text); }
-  .plan-section .dfb-hint-text a { color: var(--green-400); text-decoration: none; border-bottom: 1px solid rgba(79,168,137,0.4); transition: border-color 0.15s ease, color 0.15s ease; }
-  .plan-section .dfb-hint-text a:hover { color: white; border-bottom-color: white; }
 </style>
 </head>
 <body>
